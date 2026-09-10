@@ -692,7 +692,7 @@ function RevealScreen({
               </Badge>
               <Title order={2} mt="md" size="2rem">
                 {isClassicImposter
-                  ? "You know the category"
+                  ? `Category: ${round.category}`
                   : isImposter
                     ? round.undercover
                     : round.secret}
