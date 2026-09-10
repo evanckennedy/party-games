@@ -636,6 +636,7 @@ function RevealScreen({
 }) {
   const isLast = index === names.length - 1;
   const isImposter = round.imposter === index;
+  const isClassicImposter = mode === "classic" && isImposter;
   return (
     <Shell onHome={onHome} eyebrow="PRIVATE REVEAL">
       <Stack align="center" ta="center" gap="xl">
@@ -684,20 +685,20 @@ function RevealScreen({
             </Stack>
           ) : (
             <div className="reveal-word">
-              <Badge color={isImposter ? "red" : "orange"} size="lg">
-                {isImposter
+              <Badge color={isClassicImposter ? "red" : "orange"} size="lg">
+                {isClassicImposter
                   ? "YOU ARE THE IMPOSTER"
                   : round.category.toUpperCase()}
               </Badge>
               <Title order={2} mt="md" size="2rem">
-                {isImposter
-                  ? mode === "classic"
-                    ? "You know the category"
-                    : round.undercover
-                  : round.secret}
+                {isClassicImposter
+                  ? "You know the category"
+                  : isImposter
+                    ? round.undercover
+                    : round.secret}
               </Title>
               <Text c="dimmed" mt="xs">
-                {isImposter
+                {isClassicImposter
                   ? "Blend in. Do not get caught."
                   : "Keep it secret."}
               </Text>
