@@ -9,6 +9,7 @@ import {
 import {
   ArrowLeft,
   ArrowRight,
+  Brain,
   Check,
   Eye,
   EyeOff,
@@ -28,6 +29,7 @@ import {
   Button,
   Card,
   Container,
+  Divider,
   Group,
   Paper,
   Progress,
@@ -40,7 +42,16 @@ import {
   Title,
   type ButtonProps,
 } from "@mantine/core";
-import { categories, scenesPrompts, type ImposterMode } from "./game-data";
+import {
+  categories,
+  scenesPrompts,
+  triviaCategories,
+  triviaQuestions,
+  type ImposterMode,
+  type TriviaCategoryId,
+  type TriviaDifficulty,
+  type TriviaQuestion,
+} from "./game-data";
 
 type Screen =
   | "home"
@@ -51,7 +62,9 @@ type Screen =
   | "result"
   | "guess"
   | "final"
-  | "scenes";
+  | "scenes"
+  | "trivia-setup"
+  | "trivia";
 type SetupStep = 1 | 2 | 3;
 type Round = {
   secret: string;
@@ -158,6 +171,17 @@ export default function Home() {
   );
   const [promptIndex, setPromptIndex] = useState(0);
   const [seenPrompts, setSeenPrompts] = useState<number[]>([0]);
+  const [triviaCategory, setTriviaCategory] = useState<
+    TriviaCategoryId | "random"
+  >("random");
+  const [triviaDifficulty, setTriviaDifficulty] = useState<
+    TriviaDifficulty | "mixed"
+  >("mixed");
+  const [triviaQuestion, setTriviaQuestion] = useState<TriviaQuestion | null>(
+    null,
+  );
+  const [triviaAnswered, setTriviaAnswered] = useState(false);
+  const [seenTriviaQuestions, setSeenTriviaQuestions] = useState<string[]>([]);
 
   useEffect(() => {
     window.sessionStorage.setItem(
@@ -224,9 +248,51 @@ export default function Home() {
     setSeenPrompts([firstPrompt]);
     setScreen("scenes");
   };
+  const chooseTriviaQuestion = () => {
+    const categoryPool =
+      triviaCategory === "random"
+        ? triviaCategories.map((category) => category.id)
+        : [triviaCategory];
+    const activeCategory =
+      categoryPool[Math.floor(Math.random() * categoryPool.length)];
+    const difficultyPool =
+      triviaDifficulty === "mixed"
+        ? (["easy", "medium", "hard"] as TriviaDifficulty[])
+        : [triviaDifficulty];
+    const activeDifficulty =
+      difficultyPool[Math.floor(Math.random() * difficultyPool.length)];
+    const matchingQuestions = triviaQuestions.filter(
+      (question) =>
+        question.category === activeCategory &&
+        question.difficulty === activeDifficulty,
+    );
+    const unseenQuestions = matchingQuestions.filter(
+      (question) => !seenTriviaQuestions.includes(question.question),
+    );
+    const questionPool =
+      unseenQuestions.length > 0 ? unseenQuestions : matchingQuestions;
+    const question =
+      questionPool[Math.floor(Math.random() * questionPool.length)];
+    setTriviaQuestion(question);
+    setSeenTriviaQuestions((current) => [...current, question.question]);
+    setTriviaAnswered(false);
+    setScreen("trivia");
+  };
+  const startTrivia = () => {
+    setSeenTriviaQuestions([]);
+    setTriviaQuestion(null);
+    setTriviaAnswered(false);
+    setScreen("trivia-setup");
+  };
 
   if (screen === "home")
-    return <HomeScreen onImposter={openImposter} onScenes={startScenes} />;
+    return (
+      <HomeScreen
+        onImposter={openImposter}
+        onScenes={startScenes}
+        onTrivia={startTrivia}
+      />
+    );
   if (screen === "scenes")
     return (
       <ScenesScreen
@@ -248,6 +314,27 @@ export default function Home() {
         setMode={setMode}
         onHome={resetHome}
         onStart={startRound}
+      />
+    );
+  if (screen === "trivia-setup")
+    return (
+      <TriviaSetup
+        category={triviaCategory}
+        setCategory={setTriviaCategory}
+        difficulty={triviaDifficulty}
+        setDifficulty={setTriviaDifficulty}
+        onHome={resetHome}
+        onStart={chooseTriviaQuestion}
+      />
+    );
+  if (screen === "trivia" && triviaQuestion)
+    return (
+      <TriviaScreen
+        question={triviaQuestion}
+        answered={triviaAnswered}
+        onReveal={() => setTriviaAnswered(true)}
+        onNext={chooseTriviaQuestion}
+        onHome={resetHome}
       />
     );
   if (!round) return null;
@@ -304,9 +391,11 @@ export default function Home() {
 function HomeScreen({
   onImposter,
   onScenes,
+  onTrivia,
 }: {
   onImposter: () => void;
   onScenes: () => void;
+  onTrivia: () => void;
 }) {
   return (
     <Shell onHome={() => undefined} eyebrow="GAME NIGHT">
@@ -394,6 +483,40 @@ function HomeScreen({
               </div>
             </Stack>
           </Card>
+          <Card
+            className="game-card"
+            onClick={onTrivia}
+            withBorder
+            radius="lg"
+            p={{ base: "xl", sm: 32 }}
+            style={{
+              cursor: "pointer",
+              background:
+                "linear-gradient(145deg, rgba(56, 45, 86, .58), rgba(28, 25, 38, .82))",
+            }}
+          >
+            <Stack justify="space-between" h={230}>
+              <Group justify="space-between">
+                <ThemeIcon size={54} radius="md" color="violet">
+                  <Brain size={28} />
+                </ThemeIcon>
+                <Badge color="violet" variant="light">
+                  No setup
+                </Badge>
+              </Group>
+              <div>
+                <Title order={2}>Trivia</Title>
+                <Text c="dimmed" mt={6}>
+                  Ask the questions. Argue about the answers. Keep your own
+                  score.
+                </Text>
+                <Text c="violet" fw={700} mt="lg">
+                  Play game{" "}
+                  <ArrowRight size={16} style={{ verticalAlign: "middle" }} />
+                </Text>
+              </div>
+            </Stack>
+          </Card>
         </SimpleGrid>
       </Stack>
     </Shell>
@@ -414,6 +537,209 @@ function StepHeader({ step }: { step: SetupStep }) {
     </Stack>
   );
 }
+
+function TriviaSetup({
+  category,
+  setCategory,
+  difficulty,
+  setDifficulty,
+  onHome,
+  onStart,
+}: {
+  category: TriviaCategoryId | "random";
+  setCategory: (category: TriviaCategoryId | "random") => void;
+  difficulty: TriviaDifficulty | "mixed";
+  setDifficulty: (difficulty: TriviaDifficulty | "mixed") => void;
+  onHome: () => void;
+  onStart: () => void;
+}) {
+  return (
+    <Shell onHome={onHome} eyebrow="TRIVIA">
+      <Stack gap="xl">
+        <div>
+          <Badge color="violet" variant="light" mb="md">
+            GAME MASTER MODE
+          </Badge>
+          <Title order={1}>Set the vibe.</Title>
+          <Text c="dimmed" mt="xs">
+            Choose a category and difficulty. The room takes care of the rest.
+          </Text>
+        </div>
+        <div>
+          <Text fw={700} mb="sm">
+            Category
+          </Text>
+          <SimpleGrid cols={{ base: 2, sm: 4 }} spacing="sm">
+            <Card
+              withBorder
+              p="md"
+              radius="md"
+              onClick={() => setCategory("random")}
+              style={{
+                cursor: "pointer",
+                borderColor:
+                  category === "random"
+                    ? "var(--mantine-color-violet-5)"
+                    : undefined,
+              }}
+            >
+              <Text size="xl">🎲</Text>
+              <Text fw={700} mt="xs">
+                Random
+              </Text>
+              <Text size="xs" c="dimmed">
+                A little of everything
+              </Text>
+            </Card>
+            {triviaCategories.map((item) => (
+              <Card
+                key={item.id}
+                withBorder
+                p="md"
+                radius="md"
+                onClick={() => setCategory(item.id)}
+                style={{
+                  cursor: "pointer",
+                  borderColor:
+                    category === item.id
+                      ? "var(--mantine-color-violet-5)"
+                      : undefined,
+                }}
+              >
+                <Text size="xl">{item.icon}</Text>
+                <Text fw={700} mt="xs" size="sm">
+                  {item.label}
+                </Text>
+              </Card>
+            ))}
+          </SimpleGrid>
+        </div>
+        <div>
+          <Text fw={700} mb="sm">
+            Difficulty
+          </Text>
+          <SegmentedControl
+            fullWidth
+            size="md"
+            value={difficulty}
+            onChange={(value) =>
+              setDifficulty(value as TriviaDifficulty | "mixed")
+            }
+            data={[
+              { label: "Easy", value: "easy" },
+              { label: "Medium", value: "medium" },
+              { label: "Hard", value: "hard" },
+              { label: "Mixed", value: "mixed" },
+            ]}
+          />
+        </div>
+        <Group justify="flex-end">
+          <PrimaryButton onClick={onStart}>Start trivia</PrimaryButton>
+        </Group>
+      </Stack>
+    </Shell>
+  );
+}
+
+function TriviaScreen({
+  question,
+  answered,
+  onReveal,
+  onNext,
+  onHome,
+}: {
+  question: TriviaQuestion;
+  answered: boolean;
+  onReveal: () => void;
+  onNext: () => void;
+  onHome: () => void;
+}) {
+  return (
+    <Shell onHome={onHome} eyebrow="TRIVIA">
+      <Stack gap="xl">
+        <Group justify="space-between" align="flex-start">
+          <div>
+            <Badge color="violet" variant="light" mb="md">
+              {question.categoryLabel}
+            </Badge>
+            <Title order={1}>Question</Title>
+          </div>
+          <ThemeIcon size={48} radius="md" color="violet" variant="light">
+            <Brain size={24} />
+          </ThemeIcon>
+        </Group>
+        <Card
+          withBorder
+          radius="lg"
+          p={{ base: 28, sm: 56 }}
+          style={{
+            background:
+              "linear-gradient(145deg, rgba(56, 45, 86, .58), rgba(28, 25, 38, .82))",
+            minHeight: 330,
+            display: "grid",
+            placeItems: "center",
+            textAlign: "center",
+          }}
+        >
+          <div>
+            <Text c="dimmed" fw={700} size="sm" tt="uppercase" mb="lg">
+              {question.difficulty} question
+            </Text>
+            <Title
+              order={2}
+              size="clamp(2rem, 5vw, 3.25rem)"
+              maw={680}
+              lh={1.1}
+            >
+              {question.question}
+            </Title>
+            {answered && (
+              <div className="reveal-word">
+                <Divider my="xl" />
+                <Text c="violet.2" fw={700} size="sm" tt="uppercase">
+                  Correct answer
+                </Text>
+                <Title order={3} size="2rem" mt="xs">
+                  {question.answer}
+                </Title>
+              </div>
+            )}
+          </div>
+        </Card>
+        <Group justify="space-between">
+          <Button
+            variant="subtle"
+            color="gray"
+            leftSection={<HomeIcon size={17} />}
+            onClick={onHome}
+          >
+            Exit
+          </Button>
+          {answered ? (
+            <Button
+              size="md"
+              color="violet"
+              rightSection={<ArrowRight size={17} />}
+              onClick={onNext}
+            >
+              Next question
+            </Button>
+          ) : (
+            <Button
+              size="md"
+              color="violet"
+              rightSection={<Eye size={17} />}
+              onClick={onReveal}
+            >
+              Reveal answer
+            </Button>
+          )}
+        </Group>
+      </Stack>
+    </Shell>
+  );
+}
+
 function ImposterSetup({
   step,
   setStep,
