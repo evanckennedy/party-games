@@ -8,10 +8,11 @@ import {
   triviaQuestions,
   type TriviaCategoryId,
   type TriviaDifficulty,
+  type TriviaQuestion,
 } from "./data/trivia";
 import { HomeScreen } from "./components/home-screen";
 import { ScenesScreen } from "./components/scenes";
-import { TriviaScreen, TriviaSetup } from "./components/trivia";
+import { TriviaComplete, TriviaScreen, TriviaSetup } from "./components/trivia";
 import {
   DiscussionScreen,
   FinalScreen,
@@ -35,7 +36,8 @@ type Screen =
   | "final"
   | "scenes"
   | "trivia-setup"
-  | "trivia";
+  | "trivia"
+  | "trivia-complete";
 const initialNames = ["Alex", "Jordan", "Sam", "Taylor"];
 
 export default function Home() {
@@ -78,7 +80,9 @@ export default function Home() {
     (typeof triviaQuestions)[number] | null
   >(null);
   const [triviaAnswered, setTriviaAnswered] = useState(false);
-  const [seenTriviaQuestions, setSeenTriviaQuestions] = useState<string[]>([]);
+  const [remainingTriviaQuestions, setRemainingTriviaQuestions] = useState<
+    TriviaQuestion[]
+  >([]);
 
   useEffect(() => {
     window.sessionStorage.setItem(
@@ -96,6 +100,7 @@ export default function Home() {
     setGuessedCorrectly(null);
     setTriviaQuestion(null);
     setTriviaAnswered(false);
+    setRemainingTriviaQuestions([]);
   };
   const openImposter = () => setScreen("setup");
   const startRound = () => {
@@ -132,38 +137,40 @@ export default function Home() {
     setPromptIndex(next);
     setSeenPrompts((current) => [...current, next]);
   };
-  const chooseTriviaQuestion = () => {
+  const getTriviaPool = () => {
     const categoryPool =
       triviaCategory === "random"
         ? triviaCategories.map((category) => category.id)
         : [triviaCategory];
-    const activeCategory =
-      categoryPool[Math.floor(Math.random() * categoryPool.length)];
-    const difficultyPool =
-      triviaDifficulty === "mixed"
-        ? (["easy", "medium", "hard"] as TriviaDifficulty[])
-        : [triviaDifficulty];
-    const activeDifficulty =
-      difficultyPool[Math.floor(Math.random() * difficultyPool.length)];
-    const matching = triviaQuestions.filter(
+    return triviaQuestions.filter(
       (question) =>
-        question.category === activeCategory &&
-        question.difficulty === activeDifficulty,
+        categoryPool.includes(question.category) &&
+        (triviaDifficulty === "mixed" ||
+          question.difficulty === triviaDifficulty),
     );
-    const unseen = matching.filter(
-      (question) => !seenTriviaQuestions.includes(question.question),
-    );
-    const pool = unseen.length > 0 ? unseen : matching;
+  };
+  const chooseTriviaQuestion = (pool: TriviaQuestion[]) => {
     const question = pool[Math.floor(Math.random() * pool.length)];
     setTriviaQuestion(question);
-    setSeenTriviaQuestions((current) => [...current, question.question]);
+    setRemainingTriviaQuestions(
+      pool.filter((candidate) => candidate.question !== question.question),
+    );
     setTriviaAnswered(false);
     setScreen("trivia");
   };
+  const startTriviaSet = () => chooseTriviaQuestion(getTriviaPool());
+  const nextTriviaQuestion = () => {
+    if (remainingTriviaQuestions.length === 0) {
+      setTriviaQuestion(null);
+      setScreen("trivia-complete");
+      return;
+    }
+    chooseTriviaQuestion(remainingTriviaQuestions);
+  };
   const startTrivia = () => {
-    setSeenTriviaQuestions([]);
     setTriviaQuestion(null);
     setTriviaAnswered(false);
+    setRemainingTriviaQuestions([]);
     setScreen("trivia-setup");
   };
 
@@ -191,7 +198,7 @@ export default function Home() {
         difficulty={triviaDifficulty}
         setDifficulty={setTriviaDifficulty}
         onHome={resetHome}
-        onStart={chooseTriviaQuestion}
+        onStart={startTriviaSet}
       />
     );
   if (screen === "trivia" && triviaQuestion)
@@ -200,10 +207,12 @@ export default function Home() {
         question={triviaQuestion}
         answered={triviaAnswered}
         onReveal={() => setTriviaAnswered(true)}
-        onNext={chooseTriviaQuestion}
+        onNext={nextTriviaQuestion}
         onHome={resetHome}
       />
     );
+  if (screen === "trivia-complete")
+    return <TriviaComplete onRestart={startTrivia} onHome={resetHome} />;
   if (screen === "setup")
     return (
       <ImposterSetup

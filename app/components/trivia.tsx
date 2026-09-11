@@ -1,6 +1,12 @@
 "use client";
 
-import { ArrowRight, Brain, Eye, Home as HomeIcon } from "lucide-react";
+import {
+  ArrowRight,
+  Brain,
+  Eye,
+  Home as HomeIcon,
+  RotateCcw,
+} from "lucide-react";
 import {
   Badge,
   Button,
@@ -229,6 +235,49 @@ export function TriviaScreen({
               Reveal answer
             </Button>
           )}
+        </Group>
+      </Stack>
+    </Shell>
+  );
+}
+
+export function TriviaComplete({
+  onRestart,
+  onHome,
+}: {
+  onRestart: () => void;
+  onHome: () => void;
+}) {
+  return (
+    <Shell onHome={onHome} eyebrow="TRIVIA">
+      <Stack align="center" ta="center" gap="xl">
+        <ThemeIcon size={72} radius="xl" color="violet" variant="light">
+          <Brain size={34} />
+        </ThemeIcon>
+        <div>
+          <Title order={1}>That&apos;s the whole set.</Title>
+          <Text c="dimmed" size="lg" mt="md" maw={460}>
+            You&apos;ve seen every question that matched this Trivia setup.
+          </Text>
+        </div>
+        <Group>
+          <Button
+            size="md"
+            color="violet"
+            leftSection={<RotateCcw size={17} />}
+            onClick={onRestart}
+          >
+            Start a new set
+          </Button>
+          <Button
+            size="md"
+            variant="light"
+            color="gray"
+            leftSection={<HomeIcon size={17} />}
+            onClick={onHome}
+          >
+            Back to games
+          </Button>
         </Group>
       </Stack>
     </Shell>
