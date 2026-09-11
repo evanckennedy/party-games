@@ -218,14 +218,15 @@ export default function Home() {
     setPromptIndex(next);
     setSeenPrompts((current) => [...current, next]);
   };
+  const startScenes = () => {
+    const firstPrompt = Math.floor(Math.random() * scenesPrompts.length);
+    setPromptIndex(firstPrompt);
+    setSeenPrompts([firstPrompt]);
+    setScreen("scenes");
+  };
 
   if (screen === "home")
-    return (
-      <HomeScreen
-        onImposter={openImposter}
-        onScenes={() => setScreen("scenes")}
-      />
-    );
+    return <HomeScreen onImposter={openImposter} onScenes={startScenes} />;
   if (screen === "scenes")
     return (
       <ScenesScreen
