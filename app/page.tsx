@@ -42,7 +42,22 @@ const initialNames = ["Alex", "Jordan", "Sam", "Taylor"];
 export default function Home() {
   const [screen, setScreen] = useState<Screen>("home");
   const [step, setStep] = useState<SetupStep>(1);
-  const [names, setNames] = useState(initialNames);
+  const [names, setNames] = useState<string[]>(() => {
+    if (typeof window === "undefined") return initialNames;
+
+    const stored = window.sessionStorage.getItem("party-games-imposter-names");
+    if (!stored) return initialNames;
+
+    try {
+      const storedNames = JSON.parse(stored) as string[];
+      return Array.isArray(storedNames) && storedNames.length >= 3
+        ? storedNames
+        : initialNames;
+    } catch {
+      window.sessionStorage.removeItem("party-games-imposter-names");
+      return initialNames;
+    }
+  });
   const [categoryId, setCategoryId] = useState("random");
   const [mode, setMode] = useState<ImposterMode>("classic");
   const [round, setRound] = useState<ImposterRound | null>(null);
@@ -83,19 +98,7 @@ export default function Home() {
     setTriviaQuestion(null);
     setTriviaAnswered(false);
   };
-  const openImposter = () => {
-    const stored = window.sessionStorage.getItem("party-games-imposter-names");
-    if (stored) {
-      try {
-        const storedNames = JSON.parse(stored) as string[];
-        if (Array.isArray(storedNames) && storedNames.length >= 3)
-          setNames(storedNames);
-      } catch {
-        window.sessionStorage.removeItem("party-games-imposter-names");
-      }
-    }
-    setScreen("setup");
-  };
+  const openImposter = () => setScreen("setup");
   const startRound = () => {
     const selectedCategory =
       categoryId === "random"
