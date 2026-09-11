@@ -1,15 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { categories, type ImposterMode } from "./data/imposter-data";
+import { scenesPrompts } from "./data/scenes-data";
 import {
-  categories,
-  scenesPrompts,
   triviaCategories,
   triviaQuestions,
-  type ImposterMode,
   type TriviaCategoryId,
   type TriviaDifficulty,
-} from "./game-data";
+} from "./data/trivia-data";
 import { HomeScreen } from "./components/home-screen";
 import { ScenesScreen } from "./components/scenes";
 import { TriviaScreen, TriviaSetup } from "./components/trivia";
