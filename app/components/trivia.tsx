@@ -19,7 +19,7 @@ import {
   type TriviaCategoryId,
   type TriviaDifficulty,
   type TriviaQuestion,
-} from "../data/trivia-data";
+} from "../data/trivia";
 import { PrimaryButton, Shell } from "./shared";
 
 export function TriviaSetup({

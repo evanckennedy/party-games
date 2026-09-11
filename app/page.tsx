@@ -8,7 +8,7 @@ import {
   triviaQuestions,
   type TriviaCategoryId,
   type TriviaDifficulty,
-} from "./data/trivia-data";
+} from "./data/trivia";
 import { HomeScreen } from "./components/home-screen";
 import { ScenesScreen } from "./components/scenes";
 import { TriviaScreen, TriviaSetup } from "./components/trivia";
