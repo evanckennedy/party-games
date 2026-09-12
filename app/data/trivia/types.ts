@@ -19,3 +19,18 @@ export type TriviaQuestion = {
   question: string;
   answer: string;
 };
+
+export function buildTriviaQuestions(
+  category: TriviaCategoryId,
+  categoryLabel: string,
+  difficulty: TriviaDifficulty,
+  entries: [question: string, answer: string][],
+): TriviaQuestion[] {
+  return entries.map(([question, answer]) => ({
+    category,
+    categoryLabel,
+    difficulty,
+    question,
+    answer,
+  }));
+}
