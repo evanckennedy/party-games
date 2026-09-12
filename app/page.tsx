@@ -13,6 +13,7 @@ import {
 import { HomeScreen } from "./components/home-screen";
 import { ScenesScreen } from "./components/scenes";
 import { TriviaComplete, TriviaScreen, TriviaSetup } from "./components/trivia";
+import { TierListBoard, TierListSetup } from "./components/tier-list";
 import {
   DiscussionScreen,
   FinalScreen,
@@ -37,7 +38,9 @@ type Screen =
   | "scenes"
   | "trivia-setup"
   | "trivia"
-  | "trivia-complete";
+  | "trivia-complete"
+  | "tier-list-setup"
+  | "tier-list";
 const initialNames = ["Alex", "Jordan", "Sam", "Taylor"];
 
 export default function Home() {
@@ -83,6 +86,8 @@ export default function Home() {
   const [remainingTriviaQuestions, setRemainingTriviaQuestions] = useState<
     TriviaQuestion[]
   >([]);
+  const [tierListTitle, setTierListTitle] = useState("");
+  const [tierListItems, setTierListItems] = useState<string[]>([]);
 
   useEffect(() => {
     window.sessionStorage.setItem(
@@ -101,6 +106,8 @@ export default function Home() {
     setTriviaQuestion(null);
     setTriviaAnswered(false);
     setRemainingTriviaQuestions([]);
+    setTierListTitle("");
+    setTierListItems([]);
   };
   const openImposter = () => setScreen("setup");
   const startRound = () => {
@@ -173,6 +180,12 @@ export default function Home() {
     setRemainingTriviaQuestions([]);
     setScreen("trivia-setup");
   };
+  const startTierList = () => setScreen("tier-list-setup");
+  const beginTierList = (title: string, items: string[]) => {
+    setTierListTitle(title);
+    setTierListItems(items);
+    setScreen("tier-list");
+  };
 
   if (screen === "home")
     return (
@@ -180,6 +193,7 @@ export default function Home() {
         onImposter={openImposter}
         onScenes={startScenes}
         onTrivia={startTrivia}
+        onTierList={startTierList}
       />
     );
   if (screen === "scenes")
@@ -213,6 +227,17 @@ export default function Home() {
     );
   if (screen === "trivia-complete")
     return <TriviaComplete onRestart={startTrivia} onHome={resetHome} />;
+  if (screen === "tier-list-setup")
+    return <TierListSetup onHome={resetHome} onStart={beginTierList} />;
+  if (screen === "tier-list")
+    return (
+      <TierListBoard
+        title={tierListTitle}
+        items={tierListItems}
+        onHome={resetHome}
+        onRestart={startTierList}
+      />
+    );
   if (screen === "setup")
     return (
       <ImposterSetup
