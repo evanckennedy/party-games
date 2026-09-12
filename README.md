@@ -47,3 +47,15 @@ app/
 ```
 
 Trivia questions are organized by category and difficulty under `app/data/trivia/questions/` so the question bank can grow without creating one large file.
+
+## App Icons
+
+Place the shortcut icons in these locations with these dimensions:
+
+```text
+public/
+	apple-touch-icon.png       180x180
+	icons/
+		party-games-192.png      192x192
+		party-games-512.png      512x512
+```
