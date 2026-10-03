@@ -6,6 +6,7 @@ import {
   DndContext,
   DragEndEvent,
   DragOverlay,
+  KeyboardSensor,
   PointerSensor,
   TouchSensor,
   pointerWithin,
@@ -17,6 +18,7 @@ import {
   SortableContext,
   arrayMove,
   horizontalListSortingStrategy,
+  sortableKeyboardCoordinates,
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -311,6 +313,9 @@ export function TierListBoard({
     useSensor(TouchSensor, {
       activationConstraint: { delay: 180, tolerance: 8 },
     }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
   );
   const activeItem = board.find((item) => item.id === activeId);
   const itemsForTier = (tier: TierId) =>
@@ -354,8 +359,8 @@ export function TierListBoard({
             </Badge>
             <Title order={1}>{title}</Title>
             <Text c="dimmed" mt={5}>
-              Drag an item into any row. Drop directly on another item to
-              rearrange it.
+              Press and hold any item to drag it into a row. Swipe outside the
+              items to scroll; drop on another item to rearrange.
             </Text>
           </div>
           <ThemeIcon size={48} radius="md" color="pink" variant="light">
@@ -426,7 +431,6 @@ function TierDropZone({ tier, items }: { tier: TierId; items: BoardItem[] }) {
         borderColor: isOver ? "var(--mantine-color-pink-5)" : undefined,
         background: isOver ? "rgba(190, 24, 93, .12)" : undefined,
         minHeight: 76,
-        touchAction: "none",
         transition: "border-color 140ms ease, background 140ms ease",
       }}
     >
