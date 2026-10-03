@@ -45,7 +45,7 @@ import {
   ThemeIcon,
   Title,
 } from "@mantine/core";
-import { tierPresets, type TierPresetGroup } from "../data/tier-list-data";
+import { tierPresets, type TierPresetGroup } from "../data/tier-list";
 import { PrimaryButton, Shell } from "./shared";
 
 type TierId = "unranked" | "S" | "A" | "B" | "C" | "D";
