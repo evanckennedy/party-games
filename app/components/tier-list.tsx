@@ -498,6 +498,7 @@ function SortableItem({ item }: { item: BoardItem }) {
 function ItemChip({ item, dragging }: { item: BoardItem; dragging?: boolean }) {
   return (
     <Paper
+      className="tier-list-item"
       shadow={dragging ? "lg" : undefined}
       withBorder
       p="xs"

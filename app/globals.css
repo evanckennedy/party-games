@@ -38,6 +38,13 @@ input {
   background: rgba(253, 126, 20, 0.35);
 }
 
+.tier-list-item,
+.tier-list-item * {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
 .game-card {
   transition:
     transform 180ms ease,
