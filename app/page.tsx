@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { categories, type ImposterMode } from "./data/imposter-data";
 import { scenesPrompts } from "./data/scenes-data";
+import { secureRandomIndex } from "./lib/random";
 import {
   triviaCategories,
   triviaQuestions,
@@ -121,7 +122,7 @@ export default function Home() {
       secret: selectedCategory.words[wordIndex],
       undercover:
         selectedCategory.words[(wordIndex + 1) % selectedCategory.words.length],
-      imposter: Math.floor(Math.random() * names.length),
+      imposter: secureRandomIndex(names.length),
       category: selectedCategory.label,
     });
     setRevealIndex(0);
