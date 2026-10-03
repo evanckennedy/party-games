@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { categories, type ImposterMode } from "./data/imposter-data";
+import { categories, type ImposterMode } from "./data/imposter";
 import { scenesPrompts } from "./data/scenes-data";
 import { secureRandomIndex } from "./lib/random";
 import {

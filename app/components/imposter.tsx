@@ -27,7 +27,7 @@ import {
   ThemeIcon,
   Title,
 } from "@mantine/core";
-import { categories, type ImposterMode } from "../data/imposter-data";
+import { categories, type ImposterMode } from "../data/imposter";
 import { PrimaryButton, Shell } from "./shared";
 
 export type ImposterRound = {
