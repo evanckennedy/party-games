@@ -6,6 +6,7 @@ import {
   Flame,
   Layers3,
   MessageCircle,
+  Sparkles,
   UsersRound,
   WandSparkles,
 } from "lucide-react";
@@ -28,6 +29,7 @@ export function HomeScreen({
   onTierList,
   onWouldYouRather,
   onMostLikelyTo,
+  onYesAnd,
 }: {
   onImposter: () => void;
   onScenes: () => void;
@@ -35,6 +37,7 @@ export function HomeScreen({
   onTierList: () => void;
   onWouldYouRather: () => void;
   onMostLikelyTo: () => void;
+  onYesAnd: () => void;
 }) {
   return (
     <Shell onHome={() => undefined} eyebrow="GAME NIGHT">
@@ -104,6 +107,14 @@ export function HomeScreen({
             title="Most Likely To"
             description="Point, defend your pick, and see where the debate goes."
           />
+          <GameCard
+            onClick={onYesAnd}
+            color="green"
+            icon={<Sparkles size={28} />}
+            badge="No setup"
+            title="Yes, And"
+            description="Take turns building a story together from a scene starter."
+          />
         </SimpleGrid>
       </Stack>
     </Shell>
@@ -119,7 +130,7 @@ function GameCard({
   description,
 }: {
   onClick: () => void;
-  color: "orange" | "teal" | "violet" | "pink" | "yellow" | "cyan";
+  color: "orange" | "teal" | "violet" | "pink" | "yellow" | "cyan" | "green";
   icon: React.ReactNode;
   badge: string;
   title: string;
@@ -135,6 +146,8 @@ function GameCard({
     yellow:
       "linear-gradient(145deg, rgba(110, 80, 25, .4), rgba(34, 30, 22, .82))",
     cyan: "linear-gradient(145deg, rgba(21, 78, 91, .52), rgba(23, 31, 36, .84))",
+    green:
+      "linear-gradient(145deg, rgba(35, 92, 59, .5), rgba(25, 34, 29, .84))",
   };
   return (
     <Card

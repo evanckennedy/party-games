@@ -17,6 +17,7 @@ import { TriviaComplete, TriviaScreen, TriviaSetup } from "./components/trivia";
 import { TierListBoard, TierListSetup } from "./components/tier-list";
 import { WouldYouRatherScreen } from "./components/would-you-rather";
 import { MostLikelyToScreen } from "./components/most-likely-to";
+import { YesAndScreen } from "./components/yes-and";
 import {
   wouldYouRatherPrompts,
   type WouldYouRatherPrompt,
@@ -25,6 +26,7 @@ import {
   mostLikelyPrompts,
   type MostLikelyPrompt,
 } from "./data/most-likely-to";
+import { yesAndScenes, type YesAndScene } from "./data/yes-and";
 import {
   DiscussionScreen,
   FinalScreen,
@@ -53,7 +55,8 @@ type Screen =
   | "tier-list-setup"
   | "tier-list"
   | "would-you-rather"
-  | "most-likely-to";
+  | "most-likely-to"
+  | "yes-and";
 const initialNames = ["Alex", "Jordan", "Sam", "Taylor"];
 
 export default function Home() {
@@ -110,6 +113,10 @@ export default function Home() {
   const [remainingMostLikelyPrompts, setRemainingMostLikelyPrompts] = useState<
     MostLikelyPrompt[]
   >([]);
+  const [yesAndScene, setYesAndScene] = useState<YesAndScene | null>(null);
+  const [remainingYesAndScenes, setRemainingYesAndScenes] = useState<
+    YesAndScene[]
+  >([]);
 
   useEffect(() => {
     window.sessionStorage.setItem(
@@ -134,6 +141,8 @@ export default function Home() {
     setRemainingWouldYouRatherPrompts([]);
     setMostLikelyPrompt(null);
     setRemainingMostLikelyPrompts([]);
+    setYesAndScene(null);
+    setRemainingYesAndScenes([]);
   };
   const openImposter = () => setScreen("setup");
   const startRound = () => {
@@ -258,6 +267,27 @@ export default function Home() {
       availablePrompts.filter((prompt) => prompt.id !== nextPrompt.id),
     );
   };
+  const startYesAnd = () => {
+    const firstSceneIndex = secureRandomIndex(yesAndScenes.length);
+    const firstScene = yesAndScenes[firstSceneIndex];
+    setYesAndScene(firstScene);
+    setRemainingYesAndScenes(
+      yesAndScenes.filter((scene) => scene.id !== firstScene.id),
+    );
+    setScreen("yes-and");
+  };
+  const nextYesAndScene = () => {
+    const availableScenes =
+      remainingYesAndScenes.length > 0
+        ? remainingYesAndScenes
+        : yesAndScenes.filter((scene) => scene.id !== yesAndScene?.id);
+    const nextIndex = secureRandomIndex(availableScenes.length);
+    const nextScene = availableScenes[nextIndex];
+    setYesAndScene(nextScene);
+    setRemainingYesAndScenes(
+      availableScenes.filter((scene) => scene.id !== nextScene.id),
+    );
+  };
 
   if (screen === "home")
     return (
@@ -268,6 +298,7 @@ export default function Home() {
         onTierList={startTierList}
         onWouldYouRather={startWouldYouRather}
         onMostLikelyTo={startMostLikelyTo}
+        onYesAnd={startYesAnd}
       />
     );
   if (screen === "scenes")
@@ -326,6 +357,14 @@ export default function Home() {
         prompt={mostLikelyPrompt}
         onHome={resetHome}
         onNext={nextMostLikelyPrompt}
+      />
+    );
+  if (screen === "yes-and" && yesAndScene)
+    return (
+      <YesAndScreen
+        scene={yesAndScene}
+        onHome={resetHome}
+        onNext={nextYesAndScene}
       />
     );
   if (screen === "setup")
