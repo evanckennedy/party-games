@@ -11,6 +11,7 @@ Party Games is a mobile-first collection of social games designed for groups sha
 - **Would You Rather?**: Funny, social dilemmas for the group to debate.
 - **Most Likely To**: Group prompts to point at someone and debate the pick.
 - **Yes, And**: Improv scene starters for building a story together.
+- **Guess the Riddle**: Curated riddles with difficulty choices and answer reveals.
 
 Everything runs locally in the browser. There are no accounts, online multiplayer features, databases, or scoring systems.
 

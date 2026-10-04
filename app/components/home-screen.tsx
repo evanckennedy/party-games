@@ -5,6 +5,7 @@ import {
   Brain,
   Flame,
   Layers3,
+  Lightbulb,
   MessageCircle,
   Sparkles,
   UsersRound,
@@ -30,6 +31,7 @@ export function HomeScreen({
   onWouldYouRather,
   onMostLikelyTo,
   onYesAnd,
+  onRiddles,
 }: {
   onImposter: () => void;
   onScenes: () => void;
@@ -38,6 +40,7 @@ export function HomeScreen({
   onWouldYouRather: () => void;
   onMostLikelyTo: () => void;
   onYesAnd: () => void;
+  onRiddles: () => void;
 }) {
   return (
     <Shell onHome={() => undefined} eyebrow="GAME NIGHT">
@@ -115,6 +118,14 @@ export function HomeScreen({
             title="Yes, And"
             description="Take turns building a story together from a scene starter."
           />
+          <GameCard
+            onClick={onRiddles}
+            color="blue"
+            icon={<Lightbulb size={28} />}
+            badge="Group guessing"
+            title="Guess the Riddle"
+            description="Think it through, guess out loud, then reveal the answer."
+          />
         </SimpleGrid>
       </Stack>
     </Shell>
@@ -130,7 +141,15 @@ function GameCard({
   description,
 }: {
   onClick: () => void;
-  color: "orange" | "teal" | "violet" | "pink" | "yellow" | "cyan" | "green";
+  color:
+    | "orange"
+    | "teal"
+    | "violet"
+    | "pink"
+    | "yellow"
+    | "cyan"
+    | "green"
+    | "blue";
   icon: React.ReactNode;
   badge: string;
   title: string;
@@ -148,6 +167,7 @@ function GameCard({
     cyan: "linear-gradient(145deg, rgba(21, 78, 91, .52), rgba(23, 31, 36, .84))",
     green:
       "linear-gradient(145deg, rgba(35, 92, 59, .5), rgba(25, 34, 29, .84))",
+    blue: "linear-gradient(145deg, rgba(28, 61, 103, .55), rgba(23, 28, 37, .84))",
   };
   return (
     <Card

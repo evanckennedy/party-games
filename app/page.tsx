@@ -19,6 +19,11 @@ import { WouldYouRatherScreen } from "./components/would-you-rather";
 import { MostLikelyToScreen } from "./components/most-likely-to";
 import { YesAndScreen } from "./components/yes-and";
 import {
+  RiddleScreen,
+  RiddleSetup,
+  type RiddleDifficultyChoice,
+} from "./components/riddles";
+import {
   wouldYouRatherPrompts,
   type WouldYouRatherPrompt,
 } from "./data/would-you-rather";
@@ -27,6 +32,7 @@ import {
   type MostLikelyPrompt,
 } from "./data/most-likely-to";
 import { yesAndScenes, type YesAndScene } from "./data/yes-and";
+import { riddles, type Riddle } from "./data/riddles";
 import {
   DiscussionScreen,
   FinalScreen,
@@ -56,7 +62,9 @@ type Screen =
   | "tier-list"
   | "would-you-rather"
   | "most-likely-to"
-  | "yes-and";
+  | "yes-and"
+  | "riddle-setup"
+  | "riddle";
 const initialNames = ["Alex", "Jordan", "Sam", "Taylor"];
 
 export default function Home() {
@@ -117,6 +125,11 @@ export default function Home() {
   const [remainingYesAndScenes, setRemainingYesAndScenes] = useState<
     YesAndScene[]
   >([]);
+  const [riddleDifficulty, setRiddleDifficulty] =
+    useState<RiddleDifficultyChoice>("random");
+  const [riddle, setRiddle] = useState<Riddle | null>(null);
+  const [riddleRevealed, setRiddleRevealed] = useState(false);
+  const [remainingRiddles, setRemainingRiddles] = useState<Riddle[]>([]);
 
   useEffect(() => {
     window.sessionStorage.setItem(
@@ -143,6 +156,9 @@ export default function Home() {
     setRemainingMostLikelyPrompts([]);
     setYesAndScene(null);
     setRemainingYesAndScenes([]);
+    setRiddle(null);
+    setRiddleRevealed(false);
+    setRemainingRiddles([]);
   };
   const openImposter = () => setScreen("setup");
   const startRound = () => {
@@ -288,6 +304,26 @@ export default function Home() {
       availableScenes.filter((scene) => scene.id !== nextScene.id),
     );
   };
+  const getRiddlePool = () =>
+    riddleDifficulty === "random"
+      ? riddles
+      : riddles.filter((item) => item.difficulty === riddleDifficulty);
+  const chooseRiddle = (pool: Riddle[]) => {
+    const selectedRiddle = pool[secureRandomIndex(pool.length)];
+    setRiddle(selectedRiddle);
+    setRemainingRiddles(pool.filter((item) => item.id !== selectedRiddle.id));
+    setRiddleRevealed(false);
+    setScreen("riddle");
+  };
+  const startRiddles = () => setScreen("riddle-setup");
+  const startRiddleRun = () => chooseRiddle(getRiddlePool());
+  const nextRiddle = () => {
+    const availableRiddles =
+      remainingRiddles.length > 0
+        ? remainingRiddles
+        : getRiddlePool().filter((item) => item.id !== riddle?.id);
+    chooseRiddle(availableRiddles);
+  };
 
   if (screen === "home")
     return (
@@ -299,6 +335,7 @@ export default function Home() {
         onWouldYouRather={startWouldYouRather}
         onMostLikelyTo={startMostLikelyTo}
         onYesAnd={startYesAnd}
+        onRiddles={startRiddles}
       />
     );
   if (screen === "scenes")
@@ -365,6 +402,25 @@ export default function Home() {
         scene={yesAndScene}
         onHome={resetHome}
         onNext={nextYesAndScene}
+      />
+    );
+  if (screen === "riddle-setup")
+    return (
+      <RiddleSetup
+        difficulty={riddleDifficulty}
+        setDifficulty={setRiddleDifficulty}
+        onHome={resetHome}
+        onStart={startRiddleRun}
+      />
+    );
+  if (screen === "riddle" && riddle)
+    return (
+      <RiddleScreen
+        riddle={riddle}
+        revealed={riddleRevealed}
+        onReveal={() => setRiddleRevealed(true)}
+        onNext={nextRiddle}
+        onHome={resetHome}
       />
     );
   if (screen === "setup")
