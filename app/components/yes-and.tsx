@@ -1,11 +1,28 @@
 "use client";
 
 import { ArrowRight, Home as HomeIcon, Sparkles } from "lucide-react";
-import { Badge, Button, Card, Group, Stack, Text, ThemeIcon, Title } from "@mantine/core";
+import {
+  Badge,
+  Button,
+  Card,
+  Group,
+  Stack,
+  Text,
+  ThemeIcon,
+  Title,
+} from "@mantine/core";
 import type { YesAndScene } from "../data/yes-and";
 import { Shell } from "./shared";
 
-export function YesAndScreen({ scene, onHome, onNext }: { scene: YesAndScene; onHome: () => void; onNext: () => void }) {
+export function YesAndScreen({
+  scene,
+  onHome,
+  onNext,
+}: {
+  scene: YesAndScene;
+  onHome: () => void;
+  onNext: () => void;
+}) {
   return (
     <Shell onHome={onHome} eyebrow="YES, AND">
       <Stack gap="xl">
@@ -16,7 +33,8 @@ export function YesAndScreen({ scene, onHome, onNext }: { scene: YesAndScene; on
             </Badge>
             <Title order={1}>Yes, and...</Title>
             <Text c="dimmed" mt="sm" maw={580}>
-              Take turns adding a sentence. Accept the last idea, then build on it.
+              Take turns adding a sentence. Accept the last idea, then build on
+              it.
             </Text>
           </div>
           <ThemeIcon size={48} radius="md" color="green" variant="light">
@@ -41,7 +59,12 @@ export function YesAndScreen({ scene, onHome, onNext }: { scene: YesAndScene; on
             <Text c="green.2" fw={700} size="sm" tt="uppercase" mb="lg">
               Your scene begins...
             </Text>
-            <Title order={2} size="clamp(2rem, 5vw, 3.25rem)" maw={680} lh={1.1}>
+            <Title
+              order={2}
+              size="clamp(2rem, 5vw, 3.25rem)"
+              maw={680}
+              lh={1.1}
+            >
               {scene.setup}
             </Title>
           </div>
