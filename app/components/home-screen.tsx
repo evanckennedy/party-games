@@ -1,6 +1,13 @@
 "use client";
 
-import { ArrowRight, Brain, Flame, Layers3, WandSparkles } from "lucide-react";
+import {
+  ArrowRight,
+  Brain,
+  Flame,
+  Layers3,
+  MessageCircle,
+  WandSparkles,
+} from "lucide-react";
 import {
   Badge,
   Card,
@@ -18,11 +25,13 @@ export function HomeScreen({
   onScenes,
   onTrivia,
   onTierList,
+  onWouldYouRather,
 }: {
   onImposter: () => void;
   onScenes: () => void;
   onTrivia: () => void;
   onTierList: () => void;
+  onWouldYouRather: () => void;
 }) {
   return (
     <Shell onHome={() => undefined} eyebrow="GAME NIGHT">
@@ -76,6 +85,14 @@ export function HomeScreen({
             title="Tier List"
             description="Drag, debate, and rank your favorites together."
           />
+          <GameCard
+            onClick={onWouldYouRather}
+            color="yellow"
+            icon={<MessageCircle size={28} />}
+            badge="No setup"
+            title="Would You Rather?"
+            description="Pick a side, make your case, and keep the debate going."
+          />
         </SimpleGrid>
       </Stack>
     </Shell>
@@ -91,7 +108,7 @@ function GameCard({
   description,
 }: {
   onClick: () => void;
-  color: "orange" | "teal" | "violet" | "pink";
+  color: "orange" | "teal" | "violet" | "pink" | "yellow";
   icon: React.ReactNode;
   badge: string;
   title: string;
@@ -104,6 +121,8 @@ function GameCard({
     violet:
       "linear-gradient(145deg, rgba(56, 45, 86, .58), rgba(28, 25, 38, .82))",
     pink: "linear-gradient(145deg, rgba(107, 33, 68, .58), rgba(40, 24, 35, .82))",
+    yellow:
+      "linear-gradient(145deg, rgba(110, 80, 25, .4), rgba(34, 30, 22, .82))",
   };
   return (
     <Card

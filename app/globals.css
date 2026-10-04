@@ -45,6 +45,35 @@ input {
   -webkit-touch-callout: none;
 }
 
+.would-you-rather-options {
+  display: grid;
+  grid-template-areas: "first" "or" "second";
+  grid-template-columns: minmax(0, 1fr);
+  align-items: stretch;
+  gap: 12px;
+}
+
+.would-you-rather-first {
+  grid-area: first;
+}
+
+.would-you-rather-second {
+  grid-area: second;
+}
+
+.would-you-rather-or {
+  grid-area: or;
+  align-self: center;
+}
+
+@media (min-width: 48em) {
+  .would-you-rather-options {
+    grid-template-areas: "first or second";
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    gap: 16px;
+  }
+}
+
 .game-card {
   transition:
     transform 180ms ease,

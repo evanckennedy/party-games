@@ -15,6 +15,11 @@ import { HomeScreen } from "./components/home-screen";
 import { ScenesScreen } from "./components/scenes";
 import { TriviaComplete, TriviaScreen, TriviaSetup } from "./components/trivia";
 import { TierListBoard, TierListSetup } from "./components/tier-list";
+import { WouldYouRatherScreen } from "./components/would-you-rather";
+import {
+  wouldYouRatherPrompts,
+  type WouldYouRatherPrompt,
+} from "./data/would-you-rather";
 import {
   DiscussionScreen,
   FinalScreen,
@@ -41,7 +46,8 @@ type Screen =
   | "trivia"
   | "trivia-complete"
   | "tier-list-setup"
-  | "tier-list";
+  | "tier-list"
+  | "would-you-rather";
 const initialNames = ["Alex", "Jordan", "Sam", "Taylor"];
 
 export default function Home() {
@@ -89,6 +95,10 @@ export default function Home() {
   >([]);
   const [tierListTitle, setTierListTitle] = useState("");
   const [tierListItems, setTierListItems] = useState<string[]>([]);
+  const [wouldYouRatherPrompt, setWouldYouRatherPrompt] =
+    useState<WouldYouRatherPrompt | null>(null);
+  const [remainingWouldYouRatherPrompts, setRemainingWouldYouRatherPrompts] =
+    useState<WouldYouRatherPrompt[]>([]);
 
   useEffect(() => {
     window.sessionStorage.setItem(
@@ -109,6 +119,8 @@ export default function Home() {
     setRemainingTriviaQuestions([]);
     setTierListTitle("");
     setTierListItems([]);
+    setWouldYouRatherPrompt(null);
+    setRemainingWouldYouRatherPrompts([]);
   };
   const openImposter = () => setScreen("setup");
   const startRound = () => {
@@ -187,6 +199,29 @@ export default function Home() {
     setTierListItems(items);
     setScreen("tier-list");
   };
+  const startWouldYouRather = () => {
+    const firstIndex = secureRandomIndex(wouldYouRatherPrompts.length);
+    const firstPrompt = wouldYouRatherPrompts[firstIndex];
+    setWouldYouRatherPrompt(firstPrompt);
+    setRemainingWouldYouRatherPrompts(
+      wouldYouRatherPrompts.filter((prompt) => prompt.id !== firstPrompt.id),
+    );
+    setScreen("would-you-rather");
+  };
+  const nextWouldYouRather = () => {
+    const availablePrompts =
+      remainingWouldYouRatherPrompts.length > 0
+        ? remainingWouldYouRatherPrompts
+        : wouldYouRatherPrompts.filter(
+            (prompt) => prompt.id !== wouldYouRatherPrompt?.id,
+          );
+    const nextIndex = secureRandomIndex(availablePrompts.length);
+    const nextPrompt = availablePrompts[nextIndex];
+    setWouldYouRatherPrompt(nextPrompt);
+    setRemainingWouldYouRatherPrompts(
+      availablePrompts.filter((prompt) => prompt.id !== nextPrompt.id),
+    );
+  };
 
   if (screen === "home")
     return (
@@ -195,6 +230,7 @@ export default function Home() {
         onScenes={startScenes}
         onTrivia={startTrivia}
         onTierList={startTierList}
+        onWouldYouRather={startWouldYouRather}
       />
     );
   if (screen === "scenes")
@@ -237,6 +273,14 @@ export default function Home() {
         items={tierListItems}
         onHome={resetHome}
         onRestart={startTierList}
+      />
+    );
+  if (screen === "would-you-rather" && wouldYouRatherPrompt)
+    return (
+      <WouldYouRatherScreen
+        prompt={wouldYouRatherPrompt}
+        onHome={resetHome}
+        onNext={nextWouldYouRather}
       />
     );
   if (screen === "setup")
