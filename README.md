@@ -9,6 +9,7 @@ Party Games is a mobile-first collection of social games designed for groups sha
 - **Trivia**: Curated questions with category and difficulty choices.
 - **Tier List**: Preset or custom topics that groups rank together.
 - **Would You Rather?**: Funny, social dilemmas for the group to debate.
+- **Most Likely To**: Group prompts to point at someone and debate the pick.
 
 Everything runs locally in the browser. There are no accounts, online multiplayer features, databases, or scoring systems.
 

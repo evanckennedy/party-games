@@ -16,10 +16,15 @@ import { ScenesScreen } from "./components/scenes";
 import { TriviaComplete, TriviaScreen, TriviaSetup } from "./components/trivia";
 import { TierListBoard, TierListSetup } from "./components/tier-list";
 import { WouldYouRatherScreen } from "./components/would-you-rather";
+import { MostLikelyToScreen } from "./components/most-likely-to";
 import {
   wouldYouRatherPrompts,
   type WouldYouRatherPrompt,
 } from "./data/would-you-rather";
+import {
+  mostLikelyPrompts,
+  type MostLikelyPrompt,
+} from "./data/most-likely-to";
 import {
   DiscussionScreen,
   FinalScreen,
@@ -47,7 +52,8 @@ type Screen =
   | "trivia-complete"
   | "tier-list-setup"
   | "tier-list"
-  | "would-you-rather";
+  | "would-you-rather"
+  | "most-likely-to";
 const initialNames = ["Alex", "Jordan", "Sam", "Taylor"];
 
 export default function Home() {
@@ -99,6 +105,11 @@ export default function Home() {
     useState<WouldYouRatherPrompt | null>(null);
   const [remainingWouldYouRatherPrompts, setRemainingWouldYouRatherPrompts] =
     useState<WouldYouRatherPrompt[]>([]);
+  const [mostLikelyPrompt, setMostLikelyPrompt] =
+    useState<MostLikelyPrompt | null>(null);
+  const [remainingMostLikelyPrompts, setRemainingMostLikelyPrompts] = useState<
+    MostLikelyPrompt[]
+  >([]);
 
   useEffect(() => {
     window.sessionStorage.setItem(
@@ -121,6 +132,8 @@ export default function Home() {
     setTierListItems([]);
     setWouldYouRatherPrompt(null);
     setRemainingWouldYouRatherPrompts([]);
+    setMostLikelyPrompt(null);
+    setRemainingMostLikelyPrompts([]);
   };
   const openImposter = () => setScreen("setup");
   const startRound = () => {
@@ -222,6 +235,29 @@ export default function Home() {
       availablePrompts.filter((prompt) => prompt.id !== nextPrompt.id),
     );
   };
+  const startMostLikelyTo = () => {
+    const firstPromptIndex = secureRandomIndex(mostLikelyPrompts.length);
+    const firstPrompt = mostLikelyPrompts[firstPromptIndex];
+    setMostLikelyPrompt(firstPrompt);
+    setRemainingMostLikelyPrompts(
+      mostLikelyPrompts.filter((prompt) => prompt.id !== firstPrompt.id),
+    );
+    setScreen("most-likely-to");
+  };
+  const nextMostLikelyPrompt = () => {
+    const availablePrompts =
+      remainingMostLikelyPrompts.length > 0
+        ? remainingMostLikelyPrompts
+        : mostLikelyPrompts.filter(
+            (prompt) => prompt.id !== mostLikelyPrompt?.id,
+          );
+    const nextIndex = secureRandomIndex(availablePrompts.length);
+    const nextPrompt = availablePrompts[nextIndex];
+    setMostLikelyPrompt(nextPrompt);
+    setRemainingMostLikelyPrompts(
+      availablePrompts.filter((prompt) => prompt.id !== nextPrompt.id),
+    );
+  };
 
   if (screen === "home")
     return (
@@ -231,6 +267,7 @@ export default function Home() {
         onTrivia={startTrivia}
         onTierList={startTierList}
         onWouldYouRather={startWouldYouRather}
+        onMostLikelyTo={startMostLikelyTo}
       />
     );
   if (screen === "scenes")
@@ -281,6 +318,14 @@ export default function Home() {
         prompt={wouldYouRatherPrompt}
         onHome={resetHome}
         onNext={nextWouldYouRather}
+      />
+    );
+  if (screen === "most-likely-to" && mostLikelyPrompt)
+    return (
+      <MostLikelyToScreen
+        prompt={mostLikelyPrompt}
+        onHome={resetHome}
+        onNext={nextMostLikelyPrompt}
       />
     );
   if (screen === "setup")
