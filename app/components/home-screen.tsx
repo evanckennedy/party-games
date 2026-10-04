@@ -8,6 +8,7 @@ import {
   Lightbulb,
   MessageCircle,
   Sparkles,
+  Swords,
   UsersRound,
   WandSparkles,
 } from "lucide-react";
@@ -32,6 +33,7 @@ export function HomeScreen({
   onMostLikelyTo,
   onYesAnd,
   onRiddles,
+  onDebate,
 }: {
   onImposter: () => void;
   onScenes: () => void;
@@ -41,6 +43,7 @@ export function HomeScreen({
   onMostLikelyTo: () => void;
   onYesAnd: () => void;
   onRiddles: () => void;
+  onDebate: () => void;
 }) {
   return (
     <Shell onHome={() => undefined} eyebrow="GAME NIGHT">
@@ -126,6 +129,14 @@ export function HomeScreen({
             title="Guess the Riddle"
             description="Think it through, guess out loud, then reveal the answer."
           />
+          <GameCard
+            onClick={onDebate}
+            color="red"
+            icon={<Swords size={28} />}
+            badge="2–12 players"
+            title="Debate"
+            description="Get assigned a side, make your case, and let the audience decide."
+          />
         </SimpleGrid>
       </Stack>
     </Shell>
@@ -149,7 +160,8 @@ function GameCard({
     | "yellow"
     | "cyan"
     | "green"
-    | "blue";
+    | "blue"
+    | "red";
   icon: React.ReactNode;
   badge: string;
   title: string;
@@ -168,6 +180,7 @@ function GameCard({
     green:
       "linear-gradient(145deg, rgba(35, 92, 59, .5), rgba(25, 34, 29, .84))",
     blue: "linear-gradient(145deg, rgba(28, 61, 103, .55), rgba(23, 28, 37, .84))",
+    red: "linear-gradient(145deg, rgba(95, 34, 43, .52), rgba(35, 25, 29, .86))",
   };
   return (
     <Card

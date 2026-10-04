@@ -19,6 +19,16 @@ import { WouldYouRatherScreen } from "./components/would-you-rather";
 import { MostLikelyToScreen } from "./components/most-likely-to";
 import { YesAndScreen } from "./components/yes-and";
 import {
+  DebateCategorySetup,
+  DebatePlayersSetup,
+  DebateReadyScreen,
+  DebateResultScreen,
+  DebateTimerScreen,
+  DebateWinnerScreen,
+  type DebateDuration,
+  type DebateWinner,
+} from "./components/debate";
+import {
   RiddleScreen,
   RiddleSetup,
   type RiddleDifficultyChoice,
@@ -32,6 +42,12 @@ import {
   type MostLikelyPrompt,
 } from "./data/most-likely-to";
 import { yesAndScenes, type YesAndScene } from "./data/yes-and";
+import { type DebateCategoryChoice, type DebateClaim } from "./data/debate";
+import {
+  chooseDebateClaim,
+  createDebateRotation,
+  type DebatePair,
+} from "./lib/debate-rotation";
 import { riddles, type Riddle } from "./data/riddles";
 import {
   DiscussionScreen,
@@ -63,8 +79,20 @@ type Screen =
   | "would-you-rather"
   | "most-likely-to"
   | "yes-and"
+  | "debate-players"
+  | "debate-category"
+  | "debate-ready"
+  | "debate-active"
+  | "debate-winner"
+  | "debate-result"
   | "riddle-setup"
   | "riddle";
+
+type CurrentDebate = {
+  claim: DebateClaim;
+  defendIndex: number;
+  attackIndex: number;
+};
 const initialNames = ["Alex", "Jordan", "Sam", "Taylor"];
 
 export default function Home() {
@@ -125,6 +153,36 @@ export default function Home() {
   const [remainingYesAndScenes, setRemainingYesAndScenes] = useState<
     YesAndScene[]
   >([]);
+  const [debateNames, setDebateNames] = useState<string[]>(() => {
+    if (typeof window === "undefined") return initialNames;
+
+    const stored = window.sessionStorage.getItem("party-games-debate-names");
+    if (!stored) return initialNames;
+
+    try {
+      const parsed = JSON.parse(stored) as unknown;
+      return Array.isArray(parsed) &&
+        parsed.length >= 2 &&
+        parsed.length <= 12 &&
+        parsed.every((name) => typeof name === "string")
+        ? parsed
+        : initialNames;
+    } catch {
+      window.sessionStorage.removeItem("party-games-debate-names");
+      return initialNames;
+    }
+  });
+  const [debateCategory, setDebateCategory] =
+    useState<DebateCategoryChoice>("random");
+  const [debateDuration, setDebateDuration] = useState<DebateDuration>(60);
+  const [currentDebate, setCurrentDebate] = useState<CurrentDebate | null>(
+    null,
+  );
+  const [debatePairings, setDebatePairings] = useState<DebatePair[]>([]);
+  const [remainingDebateClaims, setRemainingDebateClaims] = useState<
+    DebateClaim[]
+  >([]);
+  const [debateWinner, setDebateWinner] = useState<DebateWinner | null>(null);
   const [riddleDifficulty, setRiddleDifficulty] =
     useState<RiddleDifficultyChoice>("random");
   const [riddle, setRiddle] = useState<Riddle | null>(null);
@@ -137,6 +195,13 @@ export default function Home() {
       JSON.stringify(names),
     );
   }, [names]);
+
+  useEffect(() => {
+    window.sessionStorage.setItem(
+      "party-games-debate-names",
+      JSON.stringify(debateNames),
+    );
+  }, [debateNames]);
 
   const resetHome = () => {
     setScreen("home");
@@ -156,6 +221,10 @@ export default function Home() {
     setRemainingMostLikelyPrompts([]);
     setYesAndScene(null);
     setRemainingYesAndScenes([]);
+    setCurrentDebate(null);
+    setDebatePairings([]);
+    setRemainingDebateClaims([]);
+    setDebateWinner(null);
     setRiddle(null);
     setRiddleRevealed(false);
     setRemainingRiddles([]);
@@ -324,6 +393,56 @@ export default function Home() {
         : getRiddlePool().filter((item) => item.id !== riddle?.id);
     chooseRiddle(availableRiddles);
   };
+  const prepareDebateRound = (
+    pairing: DebatePair,
+    categoryChoice: DebateCategoryChoice,
+    remainingClaims: DebateClaim[],
+    previousClaimId: string | null,
+  ) => {
+    const { claim, remaining } = chooseDebateClaim(
+      categoryChoice,
+      remainingClaims,
+      previousClaimId,
+    );
+
+    const [firstPlayer, secondPlayer] = pairing;
+    const firstPlayerDefends = secureRandomIndex(2) === 0;
+    setCurrentDebate({
+      claim,
+      defendIndex: firstPlayerDefends ? firstPlayer : secondPlayer,
+      attackIndex: firstPlayerDefends ? secondPlayer : firstPlayer,
+    });
+    setRemainingDebateClaims(remaining);
+    setDebateWinner(null);
+    setScreen("debate-ready");
+  };
+  const beginDebateSession = (categoryChoice: DebateCategoryChoice) => {
+    const rotation = createDebateRotation(debateNames.length);
+    setDebateCategory(categoryChoice);
+    setDebatePairings(rotation.slice(1));
+    prepareDebateRound(rotation[0], categoryChoice, [], null);
+  };
+  const nextDebate = () => {
+    let nextPairing: DebatePair;
+    let remainingPairings: DebatePair[];
+    if (debatePairings.length > 0) {
+      [nextPairing, ...remainingPairings] = debatePairings;
+    } else {
+      const nextRotation = createDebateRotation(debateNames.length);
+      [nextPairing, ...remainingPairings] = nextRotation;
+    }
+    setDebatePairings(remainingPairings);
+    prepareDebateRound(
+      nextPairing,
+      debateCategory,
+      remainingDebateClaims,
+      currentDebate?.claim.id ?? null,
+    );
+  };
+  const chooseDebateWinner = (winner: DebateWinner) => {
+    setDebateWinner(winner);
+    setScreen("debate-result");
+  };
 
   if (screen === "home")
     return (
@@ -336,6 +455,7 @@ export default function Home() {
         onMostLikelyTo={startMostLikelyTo}
         onYesAnd={startYesAnd}
         onRiddles={startRiddles}
+        onDebate={() => setScreen("debate-players")}
       />
     );
   if (screen === "scenes")
@@ -421,6 +541,79 @@ export default function Home() {
         onReveal={() => setRiddleRevealed(true)}
         onNext={nextRiddle}
         onHome={resetHome}
+      />
+    );
+  if (screen === "debate-players")
+    return (
+      <DebatePlayersSetup
+        names={debateNames}
+        setNames={setDebateNames}
+        onHome={resetHome}
+        onContinue={() => setScreen("debate-category")}
+      />
+    );
+  if (screen === "debate-category")
+    return (
+      <DebateCategorySetup
+        selected={debateCategory}
+        setSelected={setDebateCategory}
+        onHome={resetHome}
+        onContinue={() => beginDebateSession(debateCategory)}
+      />
+    );
+  if (screen === "debate-ready" && currentDebate)
+    return (
+      <DebateReadyScreen
+        claim={currentDebate.claim}
+        defendName={debateNames[currentDebate.defendIndex]}
+        attackName={debateNames[currentDebate.attackIndex]}
+        audienceNames={debateNames.filter(
+          (_, index) =>
+            index !== currentDebate.defendIndex &&
+            index !== currentDebate.attackIndex,
+        )}
+        duration={debateDuration}
+        setDuration={setDebateDuration}
+        onHome={resetHome}
+        onStart={() => setScreen("debate-active")}
+      />
+    );
+  if (screen === "debate-active" && currentDebate)
+    return (
+      <DebateTimerScreen
+        claim={currentDebate.claim}
+        defendName={debateNames[currentDebate.defendIndex]}
+        attackName={debateNames[currentDebate.attackIndex]}
+        audienceNames={debateNames.filter(
+          (_, index) =>
+            index !== currentDebate.defendIndex &&
+            index !== currentDebate.attackIndex,
+        )}
+        durationSeconds={debateDuration}
+        onHome={resetHome}
+        onTimeUp={() => setScreen("debate-winner")}
+      />
+    );
+  if (screen === "debate-winner" && currentDebate)
+    return (
+      <DebateWinnerScreen
+        defendName={debateNames[currentDebate.defendIndex]}
+        attackName={debateNames[currentDebate.attackIndex]}
+        onHome={resetHome}
+        onChoose={chooseDebateWinner}
+      />
+    );
+  if (screen === "debate-result" && currentDebate && debateWinner)
+    return (
+      <DebateResultScreen
+        winnerName={
+          debateWinner === "defend"
+            ? debateNames[currentDebate.defendIndex]
+            : debateNames[currentDebate.attackIndex]
+        }
+        isTie={debateWinner === "tie"}
+        onHome={resetHome}
+        onNext={nextDebate}
       />
     );
   if (screen === "setup")
