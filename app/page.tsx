@@ -34,6 +34,11 @@ import {
   type RiddleDifficultyChoice,
 } from "./components/riddles";
 import {
+  SpellingBeeScreen,
+  SpellingBeeSetup,
+  type SpellingBeeDifficultyChoice,
+} from "./components/spelling-bee";
+import {
   wouldYouRatherPrompts,
   type WouldYouRatherPrompt,
 } from "./data/would-you-rather";
@@ -49,6 +54,11 @@ import {
   type DebatePair,
 } from "./lib/debate-rotation";
 import { riddles, type Riddle } from "./data/riddles";
+import {
+  spellingBeeWords,
+  type SpellingBeeDifficulty,
+  type SpellingBeeWord,
+} from "./data/spelling-bee";
 import {
   DiscussionScreen,
   FinalScreen,
@@ -86,7 +96,9 @@ type Screen =
   | "debate-winner"
   | "debate-result"
   | "riddle-setup"
-  | "riddle";
+  | "riddle"
+  | "spelling-bee-setup"
+  | "spelling-bee";
 
 type CurrentDebate = {
   claim: DebateClaim;
@@ -188,6 +200,13 @@ export default function Home() {
   const [riddle, setRiddle] = useState<Riddle | null>(null);
   const [riddleRevealed, setRiddleRevealed] = useState(false);
   const [remainingRiddles, setRemainingRiddles] = useState<Riddle[]>([]);
+  const [spellingBeeDifficulty, setSpellingBeeDifficulty] =
+    useState<SpellingBeeDifficultyChoice>("random");
+  const [spellingBeeWord, setSpellingBeeWord] =
+    useState<SpellingBeeWord | null>(null);
+  const [remainingSpellingBeeWords, setRemainingSpellingBeeWords] = useState<
+    SpellingBeeWord[]
+  >([]);
 
   useEffect(() => {
     window.sessionStorage.setItem(
@@ -228,6 +247,8 @@ export default function Home() {
     setRiddle(null);
     setRiddleRevealed(false);
     setRemainingRiddles([]);
+    setSpellingBeeWord(null);
+    setRemainingSpellingBeeWords([]);
   };
   const openImposter = () => setScreen("setup");
   const startRound = () => {
@@ -393,6 +414,43 @@ export default function Home() {
         : getRiddlePool().filter((item) => item.id !== riddle?.id);
     chooseRiddle(availableRiddles);
   };
+  const getSpellingBeePool = () =>
+    spellingBeeDifficulty === "random"
+      ? spellingBeeWords
+      : spellingBeeWords.filter(
+          (word) => word.difficulty === spellingBeeDifficulty,
+        );
+  const chooseSpellingBeeWord = (pool: SpellingBeeWord[]) => {
+    const availableDifficulties: SpellingBeeDifficulty[] =
+      spellingBeeDifficulty === "random"
+        ? (["easy", "medium", "hard"] as const).filter((difficulty) =>
+            pool.some((word) => word.difficulty === difficulty),
+          )
+        : [spellingBeeDifficulty];
+    const selectedDifficulty =
+      availableDifficulties[secureRandomIndex(availableDifficulties.length)];
+    const difficultyPool = pool.filter(
+      (word) => word.difficulty === selectedDifficulty,
+    );
+    const selectedWord = difficultyPool[secureRandomIndex(difficultyPool.length)];
+    setSpellingBeeWord(selectedWord);
+    setRemainingSpellingBeeWords(
+      pool.filter((word) => word.id !== selectedWord.id),
+    );
+    setScreen("spelling-bee");
+  };
+  const startSpellingBee = () => setScreen("spelling-bee-setup");
+  const startSpellingBeeRound = () =>
+    chooseSpellingBeeWord(getSpellingBeePool());
+  const nextSpellingBeeWord = () => {
+    const availableWords =
+      remainingSpellingBeeWords.length > 0
+        ? remainingSpellingBeeWords
+        : getSpellingBeePool().filter(
+            (word) => word.id !== spellingBeeWord?.id,
+          );
+    chooseSpellingBeeWord(availableWords);
+  };
   const prepareDebateRound = (
     pairing: DebatePair,
     categoryChoice: DebateCategoryChoice,
@@ -455,6 +513,7 @@ export default function Home() {
         onMostLikelyTo={startMostLikelyTo}
         onYesAnd={startYesAnd}
         onRiddles={startRiddles}
+        onSpellingBee={startSpellingBee}
         onDebate={() => setScreen("debate-players")}
       />
     );
@@ -540,6 +599,23 @@ export default function Home() {
         revealed={riddleRevealed}
         onReveal={() => setRiddleRevealed(true)}
         onNext={nextRiddle}
+        onHome={resetHome}
+      />
+    );
+  if (screen === "spelling-bee-setup")
+    return (
+      <SpellingBeeSetup
+        difficulty={spellingBeeDifficulty}
+        setDifficulty={setSpellingBeeDifficulty}
+        onHome={resetHome}
+        onStart={startSpellingBeeRound}
+      />
+    );
+  if (screen === "spelling-bee" && spellingBeeWord)
+    return (
+      <SpellingBeeScreen
+        word={spellingBeeWord}
+        onNext={nextSpellingBeeWord}
         onHome={resetHome}
       />
     );

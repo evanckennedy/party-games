@@ -7,6 +7,7 @@ import {
   Layers3,
   Lightbulb,
   MessageCircle,
+  BookOpen,
   Sparkles,
   Swords,
   UsersRound,
@@ -33,6 +34,7 @@ export function HomeScreen({
   onMostLikelyTo,
   onYesAnd,
   onRiddles,
+  onSpellingBee,
   onDebate,
 }: {
   onImposter: () => void;
@@ -43,6 +45,7 @@ export function HomeScreen({
   onMostLikelyTo: () => void;
   onYesAnd: () => void;
   onRiddles: () => void;
+  onSpellingBee: () => void;
   onDebate: () => void;
 }) {
   return (
@@ -128,6 +131,14 @@ export function HomeScreen({
             badge="Group guessing"
             title="Guess the Riddle"
             description="Think it through, guess out loud, then reveal the answer."
+          />
+          <GameCard
+            onClick={onSpellingBee}
+            color="green"
+            icon={<BookOpen size={28} />}
+            badge="Read it aloud"
+            title="Spelling Bee"
+            description="One reads, one spells aloud, and everyone checks the word."
           />
           <GameCard
             onClick={onDebate}
