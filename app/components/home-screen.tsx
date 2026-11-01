@@ -8,6 +8,7 @@ import {
   Lightbulb,
   MessageCircle,
   BookOpen,
+  UserRound,
   Sparkles,
   Swords,
   UsersRound,
@@ -35,6 +36,7 @@ export function HomeScreen({
   onYesAnd,
   onRiddles,
   onSpellingBee,
+  onWhoAmI,
   onDebate,
 }: {
   onImposter: () => void;
@@ -46,6 +48,7 @@ export function HomeScreen({
   onYesAnd: () => void;
   onRiddles: () => void;
   onSpellingBee: () => void;
+  onWhoAmI: () => void;
   onDebate: () => void;
 }) {
   return (
@@ -139,6 +142,14 @@ export function HomeScreen({
             badge="Read it aloud"
             title="Spelling Bee"
             description="One reads, one spells aloud, and everyone checks the word."
+          />
+          <GameCard
+            onClick={onWhoAmI}
+            color="pink"
+            icon={<UserRound size={28} />}
+            badge="Guess who"
+            title="Who Am I?"
+            description="Ask yes-or-no questions and guess the identity."
           />
           <GameCard
             onClick={onDebate}

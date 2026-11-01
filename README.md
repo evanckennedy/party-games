@@ -13,6 +13,7 @@ Party Games is a mobile-first collection of social games designed for groups sha
 - **Yes, And**: Improv scene starters for building a story together.
 - **Guess the Riddle**: Curated riddles with difficulty choices and answer reveals.
 - **Spelling Bee**: Curated words with definitions, examples, and etymologies for group spelling.
+- **Who Am I?**: Guess a famous person or fictional character by asking yes-or-no questions.
 - **Debate**: Randomly assigned opposing positions, timed rounds, and audience-decided results.
 
 Everything runs locally in the browser. There are no accounts, online multiplayer features, databases, or scoring systems.

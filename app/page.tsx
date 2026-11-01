@@ -60,6 +60,12 @@ import {
   type SpellingBeeWord,
 } from "./data/spelling-bee";
 import {
+  whoAmIIdentities,
+  type WhoAmICategoryId,
+  type WhoAmIIdentity,
+} from "./data/who-am-i";
+import { WhoAmIScreen, WhoAmISetup } from "./components/who-am-i";
+import {
   DiscussionScreen,
   FinalScreen,
   GuessScreen,
@@ -98,7 +104,9 @@ type Screen =
   | "riddle-setup"
   | "riddle"
   | "spelling-bee-setup"
-  | "spelling-bee";
+  | "spelling-bee"
+  | "who-am-i-setup"
+  | "who-am-i";
 
 type CurrentDebate = {
   claim: DebateClaim;
@@ -207,6 +215,14 @@ export default function Home() {
   const [remainingSpellingBeeWords, setRemainingSpellingBeeWords] = useState<
     SpellingBeeWord[]
   >([]);
+  const [whoAmICategory, setWhoAmICategory] = useState<
+    WhoAmICategoryId | "random"
+  >("random");
+  const [whoAmIIdentity, setWhoAmIIdentity] =
+    useState<WhoAmIIdentity | null>(null);
+  const [remainingWhoAmIIdentities, setRemainingWhoAmIIdentities] = useState<
+    WhoAmIIdentity[]
+  >([]);
 
   useEffect(() => {
     window.sessionStorage.setItem(
@@ -249,6 +265,8 @@ export default function Home() {
     setRemainingRiddles([]);
     setSpellingBeeWord(null);
     setRemainingSpellingBeeWords([]);
+    setWhoAmIIdentity(null);
+    setRemainingWhoAmIIdentities([]);
   };
   const openImposter = () => setScreen("setup");
   const startRound = () => {
@@ -451,6 +469,32 @@ export default function Home() {
           );
     chooseSpellingBeeWord(availableWords);
   };
+  const getWhoAmIPool = (category: WhoAmICategoryId | "random") =>
+    category === "random"
+      ? whoAmIIdentities
+      : whoAmIIdentities.filter((identity) => identity.category === category);
+  const chooseWhoAmIIdentity = (pool: WhoAmIIdentity[]) => {
+    const identity = pool[secureRandomIndex(pool.length)];
+    setWhoAmIIdentity(identity);
+    setRemainingWhoAmIIdentities(
+      pool.filter((candidate) => candidate.id !== identity.id),
+    );
+    setScreen("who-am-i");
+  };
+  const startWhoAmI = () => setScreen("who-am-i-setup");
+  const selectWhoAmICategory = (category: WhoAmICategoryId | "random") => {
+    setWhoAmICategory(category);
+    chooseWhoAmIIdentity(getWhoAmIPool(category));
+  };
+  const nextWhoAmIPerson = () => {
+    const availableIdentities =
+      remainingWhoAmIIdentities.length > 0
+        ? remainingWhoAmIIdentities
+        : getWhoAmIPool(whoAmICategory).filter(
+            (identity) => identity.id !== whoAmIIdentity?.id,
+          );
+    chooseWhoAmIIdentity(availableIdentities);
+  };
   const prepareDebateRound = (
     pairing: DebatePair,
     categoryChoice: DebateCategoryChoice,
@@ -514,6 +558,7 @@ export default function Home() {
         onYesAnd={startYesAnd}
         onRiddles={startRiddles}
         onSpellingBee={startSpellingBee}
+        onWhoAmI={startWhoAmI}
         onDebate={() => setScreen("debate-players")}
       />
     );
@@ -617,6 +662,21 @@ export default function Home() {
         word={spellingBeeWord}
         onNext={nextSpellingBeeWord}
         onHome={resetHome}
+      />
+    );
+  if (screen === "who-am-i-setup")
+    return (
+      <WhoAmISetup
+        onHome={resetHome}
+        onSelectCategory={selectWhoAmICategory}
+      />
+    );
+  if (screen === "who-am-i" && whoAmIIdentity)
+    return (
+      <WhoAmIScreen
+        identity={whoAmIIdentity}
+        onHome={resetHome}
+        onNext={nextWhoAmIPerson}
       />
     );
   if (screen === "debate-players")
