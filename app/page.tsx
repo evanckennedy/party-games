@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { categories, type ImposterMode } from "./data/imposter";
 import { scenesPrompts } from "./data/scenes-data";
-import { secureRandomIndex } from "./lib/random";
+import { secureRandomIndex, secureShuffle } from "./lib/random";
 import {
   triviaCategories,
   triviaQuestions,
@@ -360,10 +360,10 @@ export default function Home() {
   const startRound = () => {
     const selectedCategory =
       categoryId === "random"
-        ? categories[Math.floor(Math.random() * categories.length)]
+        ? categories[secureRandomIndex(categories.length)]
         : (categories.find((category) => category.id === categoryId) ??
           categories[0]);
-    const wordIndex = Math.floor(Math.random() * selectedCategory.words.length);
+    const wordIndex = secureRandomIndex(selectedCategory.words.length);
     setRound({
       secret: selectedCategory.words[wordIndex],
       undercover:
@@ -376,20 +376,26 @@ export default function Home() {
     setScreen("reveal");
   };
   const startScenes = () => {
-    const firstPrompt = Math.floor(Math.random() * scenesPrompts.length);
+    const firstPrompt = secureRandomIndex(scenesPrompts.length);
     setPromptIndex(firstPrompt);
     setSeenPrompts([firstPrompt]);
     setScreen("scenes");
   };
   const nextPrompt = () => {
-    let next = Math.floor(Math.random() * scenesPrompts.length);
-    while (
-      seenPrompts.includes(next) &&
-      seenPrompts.length < scenesPrompts.length
-    )
-      next = Math.floor(Math.random() * scenesPrompts.length);
+    const unvisitedPrompts = scenesPrompts
+      .map((_, index) => index)
+      .filter((index) => !seenPrompts.includes(index));
+    const availablePrompts =
+      unvisitedPrompts.length > 0
+        ? unvisitedPrompts
+        : scenesPrompts
+            .map((_, index) => index)
+            .filter((index) => index !== promptIndex);
+    const next = availablePrompts[secureRandomIndex(availablePrompts.length)];
     setPromptIndex(next);
-    setSeenPrompts((current) => [...current, next]);
+    setSeenPrompts(
+      unvisitedPrompts.length > 0 ? [...seenPrompts, next] : [next],
+    );
   };
   const getTriviaPool = () => {
     const categoryPool =
@@ -404,7 +410,7 @@ export default function Home() {
     );
   };
   const chooseTriviaQuestion = (pool: TriviaQuestion[]) => {
-    const question = pool[Math.floor(Math.random() * pool.length)];
+    const question = pool[secureRandomIndex(pool.length)];
     setTriviaQuestion(question);
     setRemainingTriviaQuestions(
       pool.filter((candidate) => candidate.question !== question.question),
@@ -676,14 +682,7 @@ export default function Home() {
       categoryId === "random"
         ? blindRankingItems
         : blindRankingItems.filter((item) => item.categoryId === categoryId);
-    const shuffled = [...pool];
-    for (let index = shuffled.length - 1; index > 0; index -= 1) {
-      const swapIndex = secureRandomIndex(index + 1);
-      [shuffled[index], shuffled[swapIndex]] = [
-        shuffled[swapIndex],
-        shuffled[index],
-      ];
-    }
+    const shuffled = secureShuffle(pool);
     setBlindRankingCategoryLabel(category?.label ?? "Random Mix");
     setBlindRankingRoundItems(shuffled.slice(0, 5));
     setBlindRankings(Array(5).fill(null));

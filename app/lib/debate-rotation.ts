@@ -1,6 +1,6 @@
 import { debateCategories, debateClaims } from "../data/debate";
 import type { DebateCategoryChoice, DebateClaim } from "../data/debate";
-import { secureRandomIndex } from "./random";
+import { secureRandomIndex, secureShuffle } from "./random";
 
 export type DebatePair = [firstPlayerIndex: number, secondPlayerIndex: number];
 
@@ -9,14 +9,9 @@ export function createDebateRotation(playerCount: number): DebatePair[] {
     throw new RangeError("playerCount must be between 2 and 12");
   }
 
-  const playerOrder = Array.from({ length: playerCount }, (_, index) => index);
-  for (let index = playerOrder.length - 1; index > 0; index -= 1) {
-    const swapIndex = secureRandomIndex(index + 1);
-    [playerOrder[index], playerOrder[swapIndex]] = [
-      playerOrder[swapIndex],
-      playerOrder[index],
-    ];
-  }
+  const playerOrder = secureShuffle(
+    Array.from({ length: playerCount }, (_, index) => index),
+  );
 
   const pairings: DebatePair[] = [];
   for (let index = 0; index + 1 < playerOrder.length; index += 2) {
