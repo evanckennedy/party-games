@@ -16,6 +16,7 @@ Party Games is a mobile-first collection of social games designed for groups sha
 - **Who Am I?**: Guess a famous person or fictional character by asking yes-or-no questions.
 - **Charades**: Act out a curated prompt while the group guesses, with a 60-second timer.
 - **Hot Take**: Discuss curated provocative statements and share your honest opinions.
+- **Logic**: Solve curated reasoning challenges together, with optional hints and explanations.
 - **Debate**: Randomly assigned opposing positions, timed rounds, and audience-decided results.
 
 Everything runs locally in the browser. There are no accounts, online multiplayer features, databases, or scoring systems.

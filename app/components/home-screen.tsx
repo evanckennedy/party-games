@@ -9,6 +9,7 @@ import {
   Lightbulb,
   MessageCircle,
   BookOpen,
+  Puzzle,
   UserRound,
   Sparkles,
   Swords,
@@ -40,6 +41,7 @@ export function HomeScreen({
   onWhoAmI,
   onCharades,
   onHotTake,
+  onLogic,
   onDebate,
 }: {
   onImposter: () => void;
@@ -54,6 +56,7 @@ export function HomeScreen({
   onWhoAmI: () => void;
   onCharades: () => void;
   onHotTake: () => void;
+  onLogic: () => void;
   onDebate: () => void;
 }) {
   return (
@@ -171,6 +174,14 @@ export function HomeScreen({
             badge="Group discussion"
             title="Hot Take"
             description="Share your honest opinions on a provocative statement."
+          />
+          <GameCard
+            onClick={onLogic}
+            color="violet"
+            icon={<Puzzle size={28} />}
+            badge="Solve together"
+            title="Logic"
+            description="Talk through clever challenges, hints, and solutions."
           />
           <GameCard
             onClick={onDebate}

@@ -73,6 +73,16 @@ import {
 import { HotTakeScreen } from "./components/hot-take";
 import { hotTakes, type HotTake } from "./data/hot-takes";
 import {
+  LogicScreen,
+  LogicSetup,
+  type LogicDifficultyChoice,
+} from "./components/logic";
+import {
+  logicChallenges,
+  type LogicChallenge,
+  type LogicDifficulty,
+} from "./data/logic";
+import {
   DiscussionScreen,
   FinalScreen,
   GuessScreen,
@@ -115,7 +125,9 @@ type Screen =
   | "who-am-i-setup"
   | "who-am-i"
   | "charades"
-  | "hot-take";
+  | "hot-take"
+  | "logic-setup"
+  | "logic";
 
 type CurrentDebate = {
   claim: DebateClaim;
@@ -239,6 +251,13 @@ export default function Home() {
   >([]);
   const [hotTake, setHotTake] = useState<HotTake | null>(null);
   const [remainingHotTakes, setRemainingHotTakes] = useState<HotTake[]>([]);
+  const [logicDifficulty, setLogicDifficulty] =
+    useState<LogicDifficultyChoice>("random");
+  const [logicChallenge, setLogicChallenge] =
+    useState<LogicChallenge | null>(null);
+  const [remainingLogicChallenges, setRemainingLogicChallenges] = useState<
+    LogicChallenge[]
+  >([]);
 
   useEffect(() => {
     window.sessionStorage.setItem(
@@ -287,6 +306,8 @@ export default function Home() {
     setRemainingCharadesPrompts([]);
     setHotTake(null);
     setRemainingHotTakes([]);
+    setLogicChallenge(null);
+    setRemainingLogicChallenges([]);
   };
   const openImposter = () => setScreen("setup");
   const startRound = () => {
@@ -560,6 +581,43 @@ export default function Home() {
         : hotTakes.filter((candidate) => candidate.id !== hotTake?.id);
     chooseHotTake(availableHotTakes);
   };
+  const getLogicPool = () =>
+    logicDifficulty === "random"
+      ? logicChallenges
+      : logicChallenges.filter(
+          (challenge) => challenge.difficulty === logicDifficulty,
+        );
+  const chooseLogicChallenge = (pool: LogicChallenge[]) => {
+    const availableDifficulties: LogicDifficulty[] =
+      logicDifficulty === "random"
+        ? (["easy", "medium", "hard"] as const).filter((difficulty) =>
+            pool.some((challenge) => challenge.difficulty === difficulty),
+          )
+        : [logicDifficulty];
+    const selectedDifficulty =
+      availableDifficulties[secureRandomIndex(availableDifficulties.length)];
+    const difficultyPool = pool.filter(
+      (challenge) => challenge.difficulty === selectedDifficulty,
+    );
+    const selectedChallenge =
+      difficultyPool[secureRandomIndex(difficultyPool.length)];
+    setLogicChallenge(selectedChallenge);
+    setRemainingLogicChallenges(
+      pool.filter((challenge) => challenge.id !== selectedChallenge.id),
+    );
+    setScreen("logic");
+  };
+  const startLogic = () => setScreen("logic-setup");
+  const startLogicRun = () => chooseLogicChallenge(getLogicPool());
+  const nextLogicChallenge = () => {
+    const availableChallenges =
+      remainingLogicChallenges.length > 0
+        ? remainingLogicChallenges
+        : getLogicPool().filter(
+            (challenge) => challenge.id !== logicChallenge?.id,
+          );
+    chooseLogicChallenge(availableChallenges);
+  };
   const prepareDebateRound = (
     pairing: DebatePair,
     categoryChoice: DebateCategoryChoice,
@@ -626,6 +684,7 @@ export default function Home() {
         onWhoAmI={startWhoAmI}
         onCharades={startCharades}
         onHotTake={startHotTakes}
+        onLogic={startLogic}
         onDebate={() => setScreen("debate-players")}
       />
     );
@@ -761,6 +820,24 @@ export default function Home() {
         hotTake={hotTake}
         onHome={resetHome}
         onNext={nextHotTake}
+      />
+    );
+  if (screen === "logic-setup")
+    return (
+      <LogicSetup
+        difficulty={logicDifficulty}
+        setDifficulty={setLogicDifficulty}
+        onHome={resetHome}
+        onStart={startLogicRun}
+      />
+    );
+  if (screen === "logic" && logicChallenge)
+    return (
+      <LogicScreen
+        key={logicChallenge.id}
+        challenge={logicChallenge}
+        onHome={resetHome}
+        onNext={nextLogicChallenge}
       />
     );
   if (screen === "debate-players")
