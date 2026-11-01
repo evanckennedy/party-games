@@ -17,6 +17,7 @@ Party Games is a mobile-first collection of social games designed for groups sha
 - **Charades**: Act out a curated prompt while the group guesses, with a 60-second timer.
 - **Hot Take**: Discuss curated provocative statements and share your honest opinions.
 - **Logic**: Solve curated reasoning challenges together, with optional hints and explanations.
+- **Blind Rankings**: Rank five unseen-in-advance items one at a time across curated categories.
 - **Debate**: Randomly assigned opposing positions, timed rounds, and audience-decided results.
 
 Everything runs locally in the browser. There are no accounts, online multiplayer features, databases, or scoring systems.

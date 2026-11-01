@@ -6,6 +6,7 @@ import {
   Clapperboard,
   Flame,
   Layers3,
+  ListOrdered,
   Lightbulb,
   MessageCircle,
   BookOpen,
@@ -43,6 +44,7 @@ export function HomeScreen({
   onHotTake,
   onLogic,
   onDebate,
+  onBlindRankings,
 }: {
   onImposter: () => void;
   onScenes: () => void;
@@ -58,6 +60,7 @@ export function HomeScreen({
   onHotTake: () => void;
   onLogic: () => void;
   onDebate: () => void;
+  onBlindRankings: () => void;
 }) {
   return (
     <Shell onHome={() => undefined} eyebrow="GAME NIGHT">
@@ -190,6 +193,14 @@ export function HomeScreen({
             badge="2–12 players"
             title="Debate"
             description="Get assigned a side, make your case, and let the audience decide."
+          />
+          <GameCard
+            onClick={onBlindRankings}
+            color="cyan"
+            icon={<ListOrdered size={28} />}
+            badge="No setup"
+            title="Blind Rankings"
+            description="Rank each item before you find out what comes next."
           />
         </SimpleGrid>
       </Stack>

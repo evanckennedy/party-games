@@ -73,6 +73,17 @@ import {
 import { HotTakeScreen } from "./components/hot-take";
 import { hotTakes, type HotTake } from "./data/hot-takes";
 import {
+  BlindRankingsResult,
+  BlindRankingsRound,
+  BlindRankingsSetup,
+} from "./components/blind-rankings";
+import {
+  blindRankingCategories,
+  blindRankingItems,
+  type BlindRankingCategoryId,
+  type BlindRankingItem,
+} from "./data/blind-rankings";
+import {
   LogicScreen,
   LogicSetup,
   type LogicDifficultyChoice,
@@ -127,7 +138,10 @@ type Screen =
   | "charades"
   | "hot-take"
   | "logic-setup"
-  | "logic";
+  | "logic"
+  | "blind-rankings-setup"
+  | "blind-rankings"
+  | "blind-rankings-result";
 
 type CurrentDebate = {
   claim: DebateClaim;
@@ -258,6 +272,14 @@ export default function Home() {
   const [remainingLogicChallenges, setRemainingLogicChallenges] = useState<
     LogicChallenge[]
   >([]);
+  const [blindRankingCategoryLabel, setBlindRankingCategoryLabel] =
+    useState("");
+  const [blindRankingRoundItems, setBlindRankingRoundItems] = useState<
+    BlindRankingItem[]
+  >([]);
+  const [blindRankings, setBlindRankings] = useState<
+    (BlindRankingItem | null)[]
+  >(() => Array(5).fill(null));
 
   useEffect(() => {
     window.sessionStorage.setItem(
@@ -308,6 +330,9 @@ export default function Home() {
     setRemainingHotTakes([]);
     setLogicChallenge(null);
     setRemainingLogicChallenges([]);
+    setBlindRankingCategoryLabel("");
+    setBlindRankingRoundItems([]);
+    setBlindRankings(Array(5).fill(null));
   };
   const openImposter = () => setScreen("setup");
   const startRound = () => {
@@ -618,6 +643,51 @@ export default function Home() {
           );
     chooseLogicChallenge(availableChallenges);
   };
+  const startBlindRankings = (
+    categoryId: BlindRankingCategoryId | "random",
+  ) => {
+    const category =
+      categoryId === "random"
+        ? null
+        : blindRankingCategories.find((candidate) => candidate.id === categoryId);
+    const pool =
+      categoryId === "random"
+        ? blindRankingItems
+        : blindRankingItems.filter((item) => item.categoryId === categoryId);
+    const shuffled = [...pool];
+    for (let index = shuffled.length - 1; index > 0; index -= 1) {
+      const swapIndex = secureRandomIndex(index + 1);
+      [shuffled[index], shuffled[swapIndex]] = [
+        shuffled[swapIndex],
+        shuffled[index],
+      ];
+    }
+    setBlindRankingCategoryLabel(category?.label ?? "Random Mix");
+    setBlindRankingRoundItems(shuffled.slice(0, 5));
+    setBlindRankings(Array(5).fill(null));
+    setScreen("blind-rankings");
+  };
+  const assignBlindRanking = (rankIndex: number) => {
+    if (rankIndex < 0 || rankIndex >= 5 || blindRankings[rankIndex]) return;
+    const itemsRanked = blindRankings.filter(
+      (item): item is BlindRankingItem => item !== null,
+    ).length;
+    const item = blindRankingRoundItems[itemsRanked];
+    if (!item) return;
+    const nextRankings = blindRankings.map((rankedItem, index) =>
+      index === rankIndex ? item : rankedItem,
+    );
+    setBlindRankings(nextRankings);
+    if (nextRankings.every((rankedItem) => rankedItem !== null)) {
+      setScreen("blind-rankings-result");
+    }
+  };
+  const restartBlindRankings = () => {
+    setBlindRankingRoundItems([]);
+    setBlindRankings(Array(5).fill(null));
+    setBlindRankingCategoryLabel("");
+    setScreen("blind-rankings-setup");
+  };
   const prepareDebateRound = (
     pairing: DebatePair,
     categoryChoice: DebateCategoryChoice,
@@ -686,6 +756,7 @@ export default function Home() {
         onHotTake={startHotTakes}
         onLogic={startLogic}
         onDebate={() => setScreen("debate-players")}
+        onBlindRankings={() => setScreen("blind-rankings-setup")}
       />
     );
   if (screen === "scenes")
@@ -838,6 +909,44 @@ export default function Home() {
         challenge={logicChallenge}
         onHome={resetHome}
         onNext={nextLogicChallenge}
+      />
+    );
+  if (screen === "blind-rankings-setup")
+    return (
+      <BlindRankingsSetup
+        onHome={resetHome}
+        onSelectCategory={startBlindRankings}
+      />
+    );
+  const blindItemsRanked = blindRankings.filter(
+    (item): item is BlindRankingItem => item !== null,
+  ).length;
+  if (
+    screen === "blind-rankings" &&
+    blindRankingRoundItems[blindItemsRanked]
+  )
+    return (
+      <BlindRankingsRound
+        categoryLabel={blindRankingCategoryLabel}
+        item={blindRankingRoundItems[blindItemsRanked]}
+        itemsRanked={blindItemsRanked}
+        rankings={blindRankings}
+        onAssign={assignBlindRanking}
+        onHome={resetHome}
+      />
+    );
+  if (
+    screen === "blind-rankings-result" &&
+    blindRankings.every(
+      (item): item is BlindRankingItem => item !== null,
+    )
+  )
+    return (
+      <BlindRankingsResult
+        categoryLabel={blindRankingCategoryLabel}
+        rankings={blindRankings}
+        onHome={resetHome}
+        onPlayAgain={restartBlindRankings}
       />
     );
   if (screen === "debate-players")
