@@ -15,10 +15,6 @@ export const mediumRiddles = createRiddleSet("medium", [
   ],
   ["What starts with E, ends with E, and contains one letter?", "An envelope"],
   [
-    "What belongs to you, but other people use it more than you do?",
-    "Your name",
-  ],
-  [
     "What is so fragile that saying its name breaks it?",
     "Silence",
   ],
@@ -27,36 +23,12 @@ export const mediumRiddles = createRiddleSet("medium", [
     "A postage stamp",
   ],
   [
-    "What is always ahead of you but can never be seen?",
-    "The future",
-  ],
-  [
     "What has a head, a foot, and four legs, but no body?",
     "A bed",
   ],
   [
     "What has a tongue and a sole, but no mouth and never walks?",
     "A shoe",
-  ],
-  [
-    "What gets sharper the more you use it?",
-    "Your mind",
-  ],
-  [
-    "What kind of room has no doors or windows?",
-    "A mushroom",
-  ],
-  [
-    "What has a bark but no bite?",
-    "A tree",
-  ],
-  [
-    "What has many holes but can still hold water?",
-    "A sponge",
-  ],
-  [
-    "What can you serve but never eat?",
-    "A tennis ball",
   ],
   [
     "What five-letter word can you shorten to the number one by removing its first two letters?",
@@ -75,7 +47,35 @@ export const mediumRiddles = createRiddleSet("medium", [
     "Incorrectly",
   ],
   [
-    "What is made of water but melts when you put it in water?",
-    "Ice.",
+    "What three-letter word becomes a comparative meaning a smaller number when you add two letters?",
+    "Few becomes fewer.",
+  ],
+  [
+    "What five-letter word has six left when you take two letters away?",
+    "Sixty; remove T and Y, and “six” is left.",
+  ],
+  [
+    "What can be kept, broken, spoken, and made?",
+    "A promise.",
+  ],
+  [
+    "A boat is full of people, but there is not a single person aboard. How can that be?",
+    "Everyone aboard is married; there is no one who is single.",
+  ],
+  [
+    "What can be seen in the middle of March and April, but not at the beginning or end of either month?",
+    "The letter R.",
+  ],
+  [
+    "What letter appears once in “year,” twice in “week,” and not at all in “day”?",
+    "The letter E.",
+  ],
+  [
+    "What is black and white and “red” all over?",
+    "A newspaper; “red” sounds like “read.”",
+  ],
+  [
+    "What starts with P, ends with E, and contains thousands of letters?",
+    "A post office.",
   ],
 ]);
