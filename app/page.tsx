@@ -84,6 +84,16 @@ import {
   type BlindRankingItem,
 } from "./data/blind-rankings";
 import {
+  LetsTalkQuestionScreen,
+  LetsTalkSetup,
+} from "./components/lets-talk";
+import {
+  letsTalkCategories,
+  letsTalkQuestions,
+  type LetsTalkCategoryId,
+  type LetsTalkQuestion,
+} from "./data/lets-talk";
+import {
   LogicScreen,
   LogicSetup,
   type LogicDifficultyChoice,
@@ -141,8 +151,11 @@ type Screen =
   | "logic"
   | "blind-rankings-setup"
   | "blind-rankings"
-  | "blind-rankings-result";
+  | "blind-rankings-result"
+  | "lets-talk-setup"
+  | "lets-talk";
 
+type LetsTalkCategoryChoice = LetsTalkCategoryId | "random";
 type CurrentDebate = {
   claim: DebateClaim;
   defendIndex: number;
@@ -280,6 +293,12 @@ export default function Home() {
   const [blindRankings, setBlindRankings] = useState<
     (BlindRankingItem | null)[]
   >(() => Array(5).fill(null));
+  const [letsTalkCategory, setLetsTalkCategory] =
+    useState<LetsTalkCategoryChoice>("random");
+  const [letsTalkQuestion, setLetsTalkQuestion] =
+    useState<LetsTalkQuestion | null>(null);
+  const [remainingLetsTalkQuestions, setRemainingLetsTalkQuestions] =
+    useState<Partial<Record<LetsTalkCategoryChoice, LetsTalkQuestion[]>>>({});
 
   useEffect(() => {
     window.sessionStorage.setItem(
@@ -333,6 +352,9 @@ export default function Home() {
     setBlindRankingCategoryLabel("");
     setBlindRankingRoundItems([]);
     setBlindRankings(Array(5).fill(null));
+    setLetsTalkCategory("random");
+    setLetsTalkQuestion(null);
+    setRemainingLetsTalkQuestions({});
   };
   const openImposter = () => setScreen("setup");
   const startRound = () => {
@@ -688,6 +710,34 @@ export default function Home() {
     setBlindRankingCategoryLabel("");
     setScreen("blind-rankings-setup");
   };
+  const chooseLetsTalkQuestion = (categoryChoice: LetsTalkCategoryChoice) => {
+    const pool =
+      categoryChoice === "random"
+        ? letsTalkQuestions
+        : letsTalkQuestions.filter(
+            (question) => question.categoryId === categoryChoice,
+          );
+    const remaining = remainingLetsTalkQuestions[categoryChoice];
+    const available =
+      remaining && remaining.length > 0
+        ? remaining
+        : pool.filter(
+            (question) => question.id !== letsTalkQuestion?.id,
+          );
+    const selected = available[secureRandomIndex(available.length)];
+    setLetsTalkCategory(categoryChoice);
+    setLetsTalkQuestion(selected);
+    setRemainingLetsTalkQuestions((current) => ({
+      ...current,
+      [categoryChoice]: available.filter(
+        (question) => question.id !== selected.id,
+      ),
+    }));
+    setScreen("lets-talk");
+  };
+  const startLetsTalk = () => setScreen("lets-talk-setup");
+  const nextLetsTalkQuestion = () =>
+    chooseLetsTalkQuestion(letsTalkCategory);
   const prepareDebateRound = (
     pairing: DebatePair,
     categoryChoice: DebateCategoryChoice,
@@ -757,6 +807,7 @@ export default function Home() {
         onLogic={startLogic}
         onDebate={() => setScreen("debate-players")}
         onBlindRankings={() => setScreen("blind-rankings-setup")}
+        onLetsTalk={startLetsTalk}
       />
     );
   if (screen === "scenes")
@@ -947,6 +998,29 @@ export default function Home() {
         rankings={blindRankings}
         onHome={resetHome}
         onPlayAgain={restartBlindRankings}
+      />
+    );
+  if (screen === "lets-talk-setup")
+    return (
+      <LetsTalkSetup
+        onHome={resetHome}
+        onSelectCategory={chooseLetsTalkQuestion}
+      />
+    );
+  if (screen === "lets-talk" && letsTalkQuestion)
+    return (
+      <LetsTalkQuestionScreen
+        selectedCategoryLabel={
+          letsTalkCategory === "random"
+            ? "Random"
+            : (letsTalkCategories.find(
+                (category) => category.id === letsTalkCategory,
+              )?.label ?? "Random")
+        }
+        question={letsTalkQuestion}
+        onHome={resetHome}
+        onCategories={() => setScreen("lets-talk-setup")}
+        onNext={nextLetsTalkQuestion}
       />
     );
   if (screen === "debate-players")

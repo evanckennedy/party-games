@@ -9,6 +9,7 @@ import {
   ListOrdered,
   Lightbulb,
   MessageCircle,
+  MessagesSquare,
   BookOpen,
   Puzzle,
   UserRound,
@@ -45,6 +46,7 @@ export function HomeScreen({
   onLogic,
   onDebate,
   onBlindRankings,
+  onLetsTalk,
 }: {
   onImposter: () => void;
   onScenes: () => void;
@@ -61,6 +63,7 @@ export function HomeScreen({
   onLogic: () => void;
   onDebate: () => void;
   onBlindRankings: () => void;
+  onLetsTalk: () => void;
 }) {
   return (
     <Shell onHome={() => undefined} eyebrow="GAME NIGHT">
@@ -201,6 +204,14 @@ export function HomeScreen({
             badge="No setup"
             title="Blind Rankings"
             description="Rank each item before you find out what comes next."
+          />
+          <GameCard
+            onClick={onLetsTalk}
+            color="violet"
+            icon={<MessagesSquare size={28} />}
+            badge="No setup"
+            title="Let's Talk"
+            description="Find a good question and see where the conversation goes."
           />
         </SimpleGrid>
       </Stack>
