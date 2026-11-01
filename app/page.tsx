@@ -70,6 +70,8 @@ import {
   charadesPrompts,
   type CharadesPrompt,
 } from "./data/charades";
+import { HotTakeScreen } from "./components/hot-take";
+import { hotTakes, type HotTake } from "./data/hot-takes";
 import {
   DiscussionScreen,
   FinalScreen,
@@ -112,7 +114,8 @@ type Screen =
   | "spelling-bee"
   | "who-am-i-setup"
   | "who-am-i"
-  | "charades";
+  | "charades"
+  | "hot-take";
 
 type CurrentDebate = {
   claim: DebateClaim;
@@ -234,6 +237,8 @@ export default function Home() {
   const [remainingCharadesPrompts, setRemainingCharadesPrompts] = useState<
     CharadesPrompt[]
   >([]);
+  const [hotTake, setHotTake] = useState<HotTake | null>(null);
+  const [remainingHotTakes, setRemainingHotTakes] = useState<HotTake[]>([]);
 
   useEffect(() => {
     window.sessionStorage.setItem(
@@ -280,6 +285,8 @@ export default function Home() {
     setRemainingWhoAmIIdentities([]);
     setCharadesPrompt(null);
     setRemainingCharadesPrompts([]);
+    setHotTake(null);
+    setRemainingHotTakes([]);
   };
   const openImposter = () => setScreen("setup");
   const startRound = () => {
@@ -537,6 +544,22 @@ export default function Home() {
       charadesPrompt?.category ?? null,
     );
   };
+  const chooseHotTake = (pool: HotTake[]) => {
+    const selected = pool[secureRandomIndex(pool.length)];
+    setHotTake(selected);
+    setRemainingHotTakes(
+      pool.filter((candidate) => candidate.id !== selected.id),
+    );
+    setScreen("hot-take");
+  };
+  const startHotTakes = () => chooseHotTake(hotTakes);
+  const nextHotTake = () => {
+    const availableHotTakes =
+      remainingHotTakes.length > 0
+        ? remainingHotTakes
+        : hotTakes.filter((candidate) => candidate.id !== hotTake?.id);
+    chooseHotTake(availableHotTakes);
+  };
   const prepareDebateRound = (
     pairing: DebatePair,
     categoryChoice: DebateCategoryChoice,
@@ -602,6 +625,7 @@ export default function Home() {
         onSpellingBee={startSpellingBee}
         onWhoAmI={startWhoAmI}
         onCharades={startCharades}
+        onHotTake={startHotTakes}
         onDebate={() => setScreen("debate-players")}
       />
     );
@@ -729,6 +753,14 @@ export default function Home() {
         prompt={charadesPrompt}
         onHome={resetHome}
         onNext={nextCharade}
+      />
+    );
+  if (screen === "hot-take" && hotTake)
+    return (
+      <HotTakeScreen
+        hotTake={hotTake}
+        onHome={resetHome}
+        onNext={nextHotTake}
       />
     );
   if (screen === "debate-players")

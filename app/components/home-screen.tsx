@@ -39,6 +39,7 @@ export function HomeScreen({
   onSpellingBee,
   onWhoAmI,
   onCharades,
+  onHotTake,
   onDebate,
 }: {
   onImposter: () => void;
@@ -52,6 +53,7 @@ export function HomeScreen({
   onSpellingBee: () => void;
   onWhoAmI: () => void;
   onCharades: () => void;
+  onHotTake: () => void;
   onDebate: () => void;
 }) {
   return (
@@ -161,6 +163,14 @@ export function HomeScreen({
             badge="Act it out"
             title="Charades"
             description="Act out a prompt while everyone else guesses."
+          />
+          <GameCard
+            onClick={onHotTake}
+            color="orange"
+            icon={<MessageCircle size={28} />}
+            badge="Group discussion"
+            title="Hot Take"
+            description="Share your honest opinions on a provocative statement."
           />
           <GameCard
             onClick={onDebate}

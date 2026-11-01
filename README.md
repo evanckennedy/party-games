@@ -15,6 +15,7 @@ Party Games is a mobile-first collection of social games designed for groups sha
 - **Spelling Bee**: Curated words with definitions, examples, and etymologies for group spelling.
 - **Who Am I?**: Guess a famous person or fictional character by asking yes-or-no questions.
 - **Charades**: Act out a curated prompt while the group guesses, with a 60-second timer.
+- **Hot Take**: Discuss curated provocative statements and share your honest opinions.
 - **Debate**: Randomly assigned opposing positions, timed rounds, and audience-decided results.
 
 Everything runs locally in the browser. There are no accounts, online multiplayer features, databases, or scoring systems.
