@@ -2,83 +2,83 @@ import { createRiddleSet } from "./types";
 
 export const hardRiddles = createRiddleSet("hard", [
   [
-    "Four people must cross a bridge at night with one flashlight. They take 1, 2, 7, and 10 minutes to cross. At most two can cross at once, and the flashlight must be carried. What is the shortest total time?",
-    "17 minutes: the 1- and 2-minute people cross, the 1-minute person returns, the 7- and 10-minute people cross, the 2-minute person returns, then the 1- and 2-minute people cross",
+    "What English word has three pairs of consecutive double letters?",
+    "Bookkeeper: oo, kk, and ee.",
   ],
   [
-    "Two ropes each take exactly one hour to burn, but burn at an uneven rate. How can you measure exactly 45 minutes?",
-    "Light the first rope at both ends and the second rope at one end. When the first rope finishes after 30 minutes, light the other end of the second rope; it will finish 15 minutes later",
+    "I am an odd number. Remove one letter and I become even. What number am I?",
+    "Seven; remove the S and it spells “even.”",
   ],
   [
-    "Three boxes are labeled Apples, Oranges, and Mixed. Every label is wrong. You may take one fruit from one box without looking inside. Which box should you draw from to identify all three?",
-    "Draw from the box labeled Mixed. Since its label is wrong, the fruit reveals whether that box contains only apples or only oranges; the other two follow from the incorrect labels",
+    "What is lighter than a feather, yet nobody can hold it for very long?",
+    "Your breath.",
   ],
   [
-    "There are 25 horses and a track that fits five at a time. You have no stopwatch and can only learn the order in each race. What is the fewest races needed to identify the three fastest horses?",
-    "Seven races: five heats, one race among the heat winners, then one final race among the remaining candidates",
+    "What question can you never answer “yes” to truthfully?",
+    "“Are you asleep?”",
   ],
   [
-    "One hundred closed lockers are toggled in 100 passes: on pass 1 every locker is toggled, on pass 2 every second locker, and so on. Which lockers remain open?",
-    "The lockers with perfect-square numbers: 1, 4, 9, 16, 25, 36, 49, 64, 81, and 100",
+    "I have no life, but I can die; I have no lungs, but I need air; I have no mouth, but water kills me. What am I?",
+    "Fire.",
   ],
   [
-    "You have eight identical-looking balls, one of which is heavier. Using a balance scale only twice, how can you find the heavier ball?",
-    "Weigh three against three. If they balance, weigh one of the two remaining balls against the other. If not, take the heavier group of three and weigh one ball against another; if they balance, the third is heavier",
+    "What seven-letter word can hold hundreds of letters?",
+    "Mailbox.",
   ],
   [
-    "Three switches are outside a closed room. One controls a traditional bulb inside. You may operate the switches however you like, but enter the room only once. How do you identify the correct switch?",
-    "Turn one switch on for several minutes, then turn it off. Turn a second switch on and enter. If the bulb is lit, it is the second switch; if it is off but warm, it is the first; if it is off and cool, it is the third",
+    "What starts with P, ends with E, and contains thousands of letters?",
+    "A post office.",
   ],
   [
-    "A farmer must take a fox, a chicken, and a bag of grain across a river. The boat holds the farmer and one passenger or item. The fox cannot be left alone with the chicken, and the chicken cannot be left alone with the grain. How can all three cross?",
-    "Take the chicken across, return alone, take the fox across, bring the chicken back, take the grain across, return alone, then take the chicken across",
+    "What three-letter word becomes a comparative meaning a smaller number when you add two letters?",
+    "Few becomes fewer.",
   ],
   [
-    "A snail climbs a 10-foot wall. Each day it climbs 3 feet and each night it slides back 2 feet. How many days does it take to get over the wall?",
-    "Eight days; after seven nights it is at 7 feet, then it climbs to 10 feet on day eight and gets over before sliding back",
+    "What is black and white and “red” all over?",
+    "A newspaper.",
   ],
   [
-    "A lily pad patch doubles in area every day. It covers the whole lake on day 48. On what day was the lake half covered?",
-    "Day 47",
+    "What has four wheels and flies?",
+    "A garbage truck.",
   ],
   [
-    "A prisoner is told: 'If you tell a lie, you will be hanged; if you tell the truth, you will be shot.' What can the prisoner say to make either punishment break the rule?",
-    "'I will be hanged.' If it is true, the rule requires shooting; if it is a lie, the rule requires hanging, making either outcome contradict the rule",
+    "What tree can you hold in the palm of your hand?",
+    "A palm tree.",
   ],
   [
-    "A person looks at a portrait and says, 'Brothers and sisters I have none, but that person's father is my father's son.' Who is in the portrait?",
-    "The speaker's child",
+    "What storm has an eye that cannot see?",
+    "A hurricane.",
   ],
   [
-    "A room has two doors: one leads out and one to a trap. One guard always tells the truth and one always lies, but you do not know which is which. You may ask one guard one question. What do you ask to find the safe door?",
-    "Ask either guard, 'Which door would the other guard say leads out?' Then take the opposite door",
-  ],
-  [
-    "You have a 3-liter jug and a 5-liter jug, with no markings. How can you measure exactly 4 liters?",
-    "Fill the 5-liter jug and pour into the 3-liter jug, leaving 2 liters. Empty the 3-liter jug and pour in the 2 liters. Refill the 5-liter jug and pour into the 3-liter jug until it is full; 4 liters remain in the 5-liter jug",
+    "What has many teeth but never eats, and can cut wood?",
+    "A saw.",
   ],
   [
     "A person leaves home, makes three left turns, and returns home to find two masked people waiting. Where are they?",
-    "At home plate in a baseball game; the two masked people are the catcher and umpire",
+    "At home plate in a baseball game; the two masked people are the catcher and umpire.",
   ],
   [
-    "Ten bags each contain coins. Nine bags hold 10-gram coins, but one bag holds 9-gram coins. You may use a digital scale once. Take one coin from bag 1, two from bag 2, and so on through bag 10. The scale reads 546 grams. Which bag has the lighter coins?",
-    "Bag 4; ten normal sets would weigh 550 grams, and the 4-gram shortfall identifies bag 4",
+    "A man pushes his car to a hotel and tells the owner he is bankrupt. Why?",
+    "He is playing Monopoly.",
   ],
   [
-    "A clock's minute and hour hands overlap exactly at 12:00. How many times do they overlap in the next 12 hours?",
-    "Eleven times",
+    "A woman takes a picture of her husband, develops it, and hangs it up to dry. Later, they have dinner together. How?",
+    "She is a photographer; she took and developed a photograph of him.",
   ],
   [
-    "A cube is painted on all six outer faces, then cut into 27 equal smaller cubes. How many small cubes have paint on exactly two faces?",
-    "12; these are the middle cubes on the 12 edges",
+    "A skydiver is found in an open field beside an unopened package. What is the package?",
+    "A parachute that failed to open.",
   ],
   [
-    "In a room are three people wearing hats chosen from three white and two black hats. Each can see the others but not their own. The first says, 'I don't know my hat color.' The second says the same. The third then knows. What color is the third person's hat?",
-    "White",
+    "A person lives on the twentieth floor. On sunny days, they take the elevator only to the tenth floor and walk the rest of the way. On rainy days, they ride all the way up. Why?",
+    "They are too short to reach the twentieth-floor button, but use an umbrella to press it on rainy days.",
   ],
   [
-    "A number between 1 and 100 is chosen. You are told it is divisible by 3 and 5, and its square is less than 10,000. What is the largest possible number?",
-    "90",
+    "What letter appears once in “year,” twice in “week,” and not at all in “day”?",
+    "The letter E.",
+  ],
+  [
+    "What letter is in the middle of both “March” and “April,” but at neither end of either word?",
+    "The letter R.",
   ],
 ]);
