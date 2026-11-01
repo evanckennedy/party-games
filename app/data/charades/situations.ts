@@ -1,0 +1,28 @@
+import { createCharadesPrompts } from "./types";
+
+export const situationCharadesPrompts = createCharadesPrompts("Situations", [
+  "Running to catch a bus that is already pulling away",
+  "Getting caught cheating on a test",
+  "Realizing you have lost your phone",
+  "Seeing your crush unexpectedly",
+  "Trying to sneak out without waking anyone",
+  "Realizing you have been walking in the wrong direction",
+  "Getting caught eating food you were not supposed to touch",
+  "Pretending to understand a conversation you cannot follow",
+  "Trying to open a bag of chips quietly at midnight",
+  "Trying to look calm while you are absolutely freaking out",
+  "Acting normal after tripping in public",
+  "Realizing you sent a text to the wrong person",
+  "Trying to look innocent when you are obviously guilty",
+  "Realizing you left your phone at home",
+  "Trying to leave a party without getting pulled into another conversation",
+  "Waiting for someone who is very late",
+  "Trying to carry on a conversation while on a crowded elevator",
+  "Realizing you have been waving at the wrong person",
+  "Trying to stay awake during a very boring presentation",
+  "Trying to get comfortable on a long flight",
+  "Walking into a room and forgetting why you came in",
+  "Trying to take a group photo when nobody is looking at the camera",
+  "Getting surprised by a birthday party you did not expect",
+  "Trying to hide that you do not know the dance everyone else is doing",
+]);

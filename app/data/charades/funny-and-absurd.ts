@@ -1,0 +1,31 @@
+import { createCharadesPrompts } from "./types";
+
+export const funnyAndAbsurdCharadesPrompts = createCharadesPrompts(
+  "Funny & Absurd",
+  [
+    "A toddler negotiating with a police officer",
+    "Someone trying to kill a mosquito at 3 AM",
+    "A dad discovering the Wi-Fi is down",
+    "Someone pretending they are not cold",
+    "Trying to assemble flat-pack furniture with no instructions",
+    "A person realizing they made a terrible decision",
+    "A penguin trying to order coffee at a drive-through",
+    "A dog trying to act like it has a normal office job",
+    "A person dramatically discovering there is no more toilet paper",
+    "Someone trying to sneak a huge snack into a movie theatre",
+    "A person attempting to swat a fly that keeps escaping",
+    "An astronaut trying to do ordinary chores in zero gravity",
+    "A person arguing with a self-checkout machine",
+    "Someone trying to look cool while riding a tiny tricycle",
+    "A very serious chef discovering their soup is far too salty",
+    "A person trying to dance while standing on a moving bus",
+    "Someone attempting to put a fitted sheet on a bed by themselves",
+    "A person trying to keep a straight face during a staring contest",
+    "A bodybuilder struggling to open a pickle jar",
+    "Someone pretending a spicy meal is not spicy at all",
+    "A person trying to quietly sneak past a sleeping dragon",
+    "A cat being asked to take a bath",
+    "A person trying to swat a mosquito without waking their partner",
+    "A robot attempting to blend in at a dance party",
+  ],
+);

@@ -65,6 +65,11 @@ import {
   type WhoAmIIdentity,
 } from "./data/who-am-i";
 import { WhoAmIScreen, WhoAmISetup } from "./components/who-am-i";
+import { CharadesScreen } from "./components/charades";
+import {
+  charadesPrompts,
+  type CharadesPrompt,
+} from "./data/charades";
 import {
   DiscussionScreen,
   FinalScreen,
@@ -106,7 +111,8 @@ type Screen =
   | "spelling-bee-setup"
   | "spelling-bee"
   | "who-am-i-setup"
-  | "who-am-i";
+  | "who-am-i"
+  | "charades";
 
 type CurrentDebate = {
   claim: DebateClaim;
@@ -223,6 +229,11 @@ export default function Home() {
   const [remainingWhoAmIIdentities, setRemainingWhoAmIIdentities] = useState<
     WhoAmIIdentity[]
   >([]);
+  const [charadesPrompt, setCharadesPrompt] =
+    useState<CharadesPrompt | null>(null);
+  const [remainingCharadesPrompts, setRemainingCharadesPrompts] = useState<
+    CharadesPrompt[]
+  >([]);
 
   useEffect(() => {
     window.sessionStorage.setItem(
@@ -267,6 +278,8 @@ export default function Home() {
     setRemainingSpellingBeeWords([]);
     setWhoAmIIdentity(null);
     setRemainingWhoAmIIdentities([]);
+    setCharadesPrompt(null);
+    setRemainingCharadesPrompts([]);
   };
   const openImposter = () => setScreen("setup");
   const startRound = () => {
@@ -495,6 +508,35 @@ export default function Home() {
           );
     chooseWhoAmIIdentity(availableIdentities);
   };
+  const chooseCharadesPrompt = (
+    pool: CharadesPrompt[],
+    previousCategory: CharadesPrompt["category"] | null,
+  ) => {
+    const differentCategory = previousCategory
+      ? pool.filter((prompt) => prompt.category !== previousCategory)
+      : pool;
+    const selectionPool =
+      differentCategory.length > 0 ? differentCategory : pool;
+    const prompt = selectionPool[secureRandomIndex(selectionPool.length)];
+    setCharadesPrompt(prompt);
+    setRemainingCharadesPrompts(
+      pool.filter((candidate) => candidate.id !== prompt.id),
+    );
+    setScreen("charades");
+  };
+  const startCharades = () => chooseCharadesPrompt(charadesPrompts, null);
+  const nextCharade = () => {
+    const availablePrompts =
+      remainingCharadesPrompts.length > 0
+        ? remainingCharadesPrompts
+        : charadesPrompts.filter(
+            (prompt) => prompt.id !== charadesPrompt?.id,
+          );
+    chooseCharadesPrompt(
+      availablePrompts,
+      charadesPrompt?.category ?? null,
+    );
+  };
   const prepareDebateRound = (
     pairing: DebatePair,
     categoryChoice: DebateCategoryChoice,
@@ -559,6 +601,7 @@ export default function Home() {
         onRiddles={startRiddles}
         onSpellingBee={startSpellingBee}
         onWhoAmI={startWhoAmI}
+        onCharades={startCharades}
         onDebate={() => setScreen("debate-players")}
       />
     );
@@ -677,6 +720,15 @@ export default function Home() {
         identity={whoAmIIdentity}
         onHome={resetHome}
         onNext={nextWhoAmIPerson}
+      />
+    );
+  if (screen === "charades" && charadesPrompt)
+    return (
+      <CharadesScreen
+        key={charadesPrompt.id}
+        prompt={charadesPrompt}
+        onHome={resetHome}
+        onNext={nextCharade}
       />
     );
   if (screen === "debate-players")

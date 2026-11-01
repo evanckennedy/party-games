@@ -3,6 +3,7 @@
 import {
   ArrowRight,
   Brain,
+  Clapperboard,
   Flame,
   Layers3,
   Lightbulb,
@@ -37,6 +38,7 @@ export function HomeScreen({
   onRiddles,
   onSpellingBee,
   onWhoAmI,
+  onCharades,
   onDebate,
 }: {
   onImposter: () => void;
@@ -49,6 +51,7 @@ export function HomeScreen({
   onRiddles: () => void;
   onSpellingBee: () => void;
   onWhoAmI: () => void;
+  onCharades: () => void;
   onDebate: () => void;
 }) {
   return (
@@ -150,6 +153,14 @@ export function HomeScreen({
             badge="Guess who"
             title="Who Am I?"
             description="Ask yes-or-no questions and guess the identity."
+          />
+          <GameCard
+            onClick={onCharades}
+            color="orange"
+            icon={<Clapperboard size={28} />}
+            badge="Act it out"
+            title="Charades"
+            description="Act out a prompt while everyone else guesses."
           />
           <GameCard
             onClick={onDebate}
