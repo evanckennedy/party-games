@@ -1,9 +1,7 @@
 "use client";
 
-import { Home as HomeIcon } from "lucide-react";
 import {
   Badge,
-  Button,
   Card,
   Divider,
   Group,
@@ -16,7 +14,7 @@ import type {
   SpellingBeeDifficulty,
   SpellingBeeWord,
 } from "../data/spelling-bee";
-import { PrimaryButton, Shell } from "./shared";
+import { GameMenuButton, PrimaryButton, Shell } from "./shared";
 import { HowToPlayButton } from "./game-guide";
 
 export type SpellingBeeDifficultyChoice = SpellingBeeDifficulty | "random";
@@ -71,10 +69,12 @@ export function SpellingBeeScreen({
   word,
   onNext,
   onHome,
+  onGameMenu,
 }: {
   word: SpellingBeeWord;
   onNext: () => void;
   onHome: () => void;
+  onGameMenu: () => void;
 }) {
   return (
     <Shell onHome={onHome} eyebrow="SPELLING BEE">
@@ -136,14 +136,7 @@ export function SpellingBeeScreen({
           </Stack>
         </Card>
         <Group justify="space-between" wrap="wrap">
-          <Button
-            variant="subtle"
-            color="gray"
-            leftSection={<HomeIcon size={17} />}
-            onClick={onHome}
-          >
-            Back to games
-          </Button>
+          <GameMenuButton onClick={onGameMenu} />
           <PrimaryButton onClick={onNext}>Next Word</PrimaryButton>
         </Group>
       </Stack>

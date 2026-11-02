@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Home as HomeIcon, MessageCircle } from "lucide-react";
+import { ArrowRight, MessageCircle } from "lucide-react";
 import {
   Badge,
   Button,
@@ -12,15 +12,17 @@ import {
   Title,
 } from "@mantine/core";
 import type { WouldYouRatherPrompt } from "../data/would-you-rather";
-import { Shell } from "./shared";
+import { GameMenuButton, Shell } from "./shared";
 
 export function WouldYouRatherScreen({
   prompt,
   onHome,
+  onGameMenu,
   onNext,
 }: {
   prompt: WouldYouRatherPrompt;
   onHome: () => void;
+  onGameMenu: () => void;
   onNext: () => void;
 }) {
   return (
@@ -59,14 +61,7 @@ export function WouldYouRatherScreen({
         </div>
 
         <Group justify="space-between">
-          <Button
-            variant="subtle"
-            color="gray"
-            leftSection={<HomeIcon size={17} />}
-            onClick={onHome}
-          >
-            Back to games
-          </Button>
+          <GameMenuButton onClick={onGameMenu} />
           <Button
             size="md"
             color="yellow"

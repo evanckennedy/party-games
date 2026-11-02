@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Home as HomeIcon, UserRound } from "lucide-react";
+import { ArrowRight, UserRound } from "lucide-react";
 import {
   Badge,
   Button,
@@ -17,7 +17,7 @@ import {
   type WhoAmICategoryId,
   type WhoAmIIdentity,
 } from "../data/who-am-i";
-import { Shell } from "./shared";
+import { GameMenuButton, Shell } from "./shared";
 import { HowToPlayButton } from "./game-guide";
 
 export function WhoAmISetup({
@@ -94,10 +94,12 @@ function CategoryCard({
 export function WhoAmIScreen({
   identity,
   onHome,
+  onGameMenu,
   onNext,
 }: {
   identity: WhoAmIIdentity;
   onHome: () => void;
+  onGameMenu: () => void;
   onNext: () => void;
 }) {
   return (
@@ -135,14 +137,7 @@ export function WhoAmIScreen({
           </Title>
         </Card>
         <Group justify="space-between">
-          <Button
-            variant="subtle"
-            color="gray"
-            leftSection={<HomeIcon size={17} />}
-            onClick={onHome}
-          >
-            Back to games
-          </Button>
+          <GameMenuButton onClick={onGameMenu} />
           <Button
             size="md"
             color="pink"

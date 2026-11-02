@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Home as HomeIcon, ListOrdered } from "lucide-react";
+import { ArrowRight, ListOrdered } from "lucide-react";
 import {
   Badge,
   Button,
@@ -17,7 +17,7 @@ import {
   type BlindRankingCategoryId,
   type BlindRankingItem,
 } from "../data/blind-rankings";
-import { Shell } from "./shared";
+import { GameMenuButton, Shell } from "./shared";
 import { HowToPlayButton } from "./game-guide";
 
 const rankLabels = ["Best", "", "", "", "Worst"];
@@ -100,6 +100,7 @@ export function BlindRankingsRound({
   rankings,
   onAssign,
   onHome,
+  onGameMenu,
 }: {
   categoryLabel: string;
   item: BlindRankingItem;
@@ -107,6 +108,7 @@ export function BlindRankingsRound({
   rankings: (BlindRankingItem | null)[];
   onAssign: (rankIndex: number) => void;
   onHome: () => void;
+  onGameMenu: () => void;
 }) {
   return (
     <Shell onHome={onHome} eyebrow="BLIND RANKINGS">
@@ -179,6 +181,9 @@ export function BlindRankingsRound({
             ))}
           </SimpleGrid>
         </Stack>
+        <Group justify="flex-start">
+          <GameMenuButton onClick={onGameMenu} />
+        </Group>
       </Stack>
     </Shell>
   );
@@ -188,11 +193,13 @@ export function BlindRankingsResult({
   categoryLabel,
   rankings,
   onHome,
+  onGameMenu,
   onPlayAgain,
 }: {
   categoryLabel: string;
   rankings: BlindRankingItem[];
   onHome: () => void;
+  onGameMenu: () => void;
   onPlayAgain: () => void;
 }) {
   return (
@@ -220,14 +227,7 @@ export function BlindRankingsResult({
           ))}
         </Stack>
         <Group justify="space-between">
-          <Button
-            variant="subtle"
-            color="gray"
-            leftSection={<HomeIcon size={17} />}
-            onClick={onHome}
-          >
-            Back to games
-          </Button>
+          <GameMenuButton onClick={onGameMenu} />
           <Button
             size="md"
             color="cyan"

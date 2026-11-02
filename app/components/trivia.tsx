@@ -26,7 +26,7 @@ import {
   type TriviaDifficulty,
   type TriviaQuestion,
 } from "../data/trivia";
-import { PrimaryButton, Shell } from "./shared";
+import { GameMenuButton, PrimaryButton, Shell } from "./shared";
 import { HowToPlayButton } from "./game-guide";
 
 export function TriviaSetup({
@@ -152,12 +152,14 @@ export function TriviaScreen({
   onReveal,
   onNext,
   onHome,
+  onGameMenu,
 }: {
   question: TriviaQuestion;
   answered: boolean;
   onReveal: () => void;
   onNext: () => void;
   onHome: () => void;
+  onGameMenu: () => void;
 }) {
   return (
     <Shell onHome={onHome} eyebrow="TRIVIA">
@@ -212,14 +214,7 @@ export function TriviaScreen({
           </div>
         </Card>
         <Group justify="space-between">
-          <Button
-            variant="subtle"
-            color="gray"
-            leftSection={<HomeIcon size={17} />}
-            onClick={onHome}
-          >
-            Exit
-          </Button>
+          <GameMenuButton onClick={onGameMenu} />
           {answered ? (
             <Button
               size="md"
@@ -280,7 +275,7 @@ export function TriviaComplete({
             leftSection={<HomeIcon size={17} />}
             onClick={onHome}
           >
-            Back to games
+            Back to categories
           </Button>
         </Group>
       </Stack>

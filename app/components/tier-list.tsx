@@ -25,7 +25,6 @@ import { CSS } from "@dnd-kit/utilities";
 import {
   Check,
   GripVertical,
-  Home as HomeIcon,
   Plus,
   RotateCcw,
   Sparkles,
@@ -46,7 +45,7 @@ import {
   Title,
 } from "@mantine/core";
 import { tierPresets, type TierPresetGroup } from "../data/tier-list";
-import { PrimaryButton, Shell } from "./shared";
+import { GameMenuButton, PrimaryButton, Shell } from "./shared";
 import { HowToPlayButton } from "./game-guide";
 
 type TierId = "unranked" | "S" | "A" | "B" | "C" | "D";
@@ -297,11 +296,13 @@ export function TierListBoard({
   title,
   items,
   onHome,
+  onGameMenu,
   onRestart,
 }: {
   title: string;
   items: string[];
   onHome: () => void;
+  onGameMenu: () => void;
   onRestart: () => void;
 }) {
   const [board, setBoard] = useState<BoardItem[]>(() =>
@@ -322,6 +323,15 @@ export function TierListBoard({
     }),
   );
   const activeItem = board.find((item) => item.id === activeId);
+  const confirmExit = () =>
+    board.every((item) => item.tier === "unranked") ||
+    window.confirm("Leave this tier list? Your current ranking will be lost.");
+  const handleHome = () => {
+    if (confirmExit()) onHome();
+  };
+  const handleGameMenu = () => {
+    if (confirmExit()) onGameMenu();
+  };
   const itemsForTier = (tier: TierId) =>
     board.filter((item) => item.tier === tier);
   const handleDragEnd = ({ active, over }: DragEndEvent) => {
@@ -354,7 +364,7 @@ export function TierListBoard({
     });
   };
   return (
-    <Shell onHome={onHome} eyebrow="TIER LIST">
+    <Shell onHome={handleHome} eyebrow="TIER LIST">
       <Stack gap="lg">
         <Group justify="space-between" align="flex-start">
           <div>
@@ -389,14 +399,7 @@ export function TierListBoard({
           </DragOverlay>
         </DndContext>
         <Group justify="space-between" mt="sm">
-          <Button
-            variant="subtle"
-            color="gray"
-            leftSection={<HomeIcon size={17} />}
-            onClick={onHome}
-          >
-            Back to games
-          </Button>
+          <GameMenuButton onClick={handleGameMenu} />
           <Group gap="xs">
             <Button
               variant="subtle"
@@ -409,7 +412,7 @@ export function TierListBoard({
             <Button
               color="pink"
               leftSection={<Check size={17} />}
-              onClick={onHome}
+              onClick={handleHome}
             >
               Done
             </Button>

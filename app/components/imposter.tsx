@@ -28,7 +28,7 @@ import {
   Title,
 } from "@mantine/core";
 import { categories, type ImposterMode } from "../data/imposter";
-import { PrimaryButton, Shell } from "./shared";
+import { GameMenuButton, PrimaryButton, Shell } from "./shared";
 import { HowToPlayButton } from "./game-guide";
 
 export type ImposterRound = {
@@ -276,6 +276,7 @@ export function RevealScreen({
   revealed,
   setRevealed,
   onHome,
+  onGameMenu,
   onNext,
   onRules,
 }: {
@@ -287,6 +288,7 @@ export function RevealScreen({
   revealed: boolean;
   setRevealed: (value: boolean) => void;
   onHome: () => void;
+  onGameMenu: () => void;
   onNext: () => void;
   onRules: () => void;
 }) {
@@ -372,11 +374,14 @@ export function RevealScreen({
             Hide information
           </Button>
         )}
-        {revealed && (
-          <PrimaryButton onClick={isLast ? onRules : onNext}>
-            {isLast ? "Everyone is ready" : "Next player"}
-          </PrimaryButton>
-        )}
+        <Group justify="space-between" w="100%">
+          <GameMenuButton onClick={onGameMenu} />
+          {revealed && (
+            <PrimaryButton onClick={isLast ? onRules : onNext}>
+              {isLast ? "Everyone is ready" : "Next player"}
+            </PrimaryButton>
+          )}
+        </Group>
       </Stack>
     </Shell>
   );
@@ -384,9 +389,11 @@ export function RevealScreen({
 
 export function RulesScreen({
   onHome,
+  onGameMenu,
   onContinue,
 }: {
   onHome: () => void;
+  onGameMenu: () => void;
   onContinue: () => void;
 }) {
   return (
@@ -410,7 +417,10 @@ export function RulesScreen({
             <Rule number="03" text="Decide together, then reveal." />
           </Stack>
         </Paper>
-        <PrimaryButton onClick={onContinue}>Start the discussion</PrimaryButton>
+        <Group justify="space-between" w="100%" maw={520}>
+          <GameMenuButton onClick={onGameMenu} />
+          <PrimaryButton onClick={onContinue}>Start the discussion</PrimaryButton>
+        </Group>
       </Stack>
     </Shell>
   );
@@ -425,9 +435,11 @@ function Rule({ number, text }: { number: string; text: string }) {
 }
 export function DiscussionScreen({
   onHome,
+  onGameMenu,
   onReveal,
 }: {
   onHome: () => void;
+  onGameMenu: () => void;
   onReveal: () => void;
 }) {
   return (
@@ -450,12 +462,16 @@ export function DiscussionScreen({
             Reveal the result
           </Button>
         </Paper>
+        <Group justify="flex-start" w="100%" maw={460}>
+          <GameMenuButton onClick={onGameMenu} />
+        </Group>
       </Stack>
     </Shell>
   );
 }
 export function ResultScreen({
   onHome,
+  onGameMenu,
   names,
   round,
   identified,
@@ -463,6 +479,7 @@ export function ResultScreen({
   onContinue,
 }: {
   onHome: () => void;
+  onGameMenu: () => void;
   names: string[];
   round: ImposterRound;
   identified: boolean | null;
@@ -503,21 +520,26 @@ export function ResultScreen({
             No, they got away
           </Button>
         </Group>
-        {identified !== null && (
-          <PrimaryButton onClick={onContinue}>
-            {identified ? "Give them one last chance" : "See who wins"}
-          </PrimaryButton>
-        )}
+        <Group justify="space-between" w="100%" maw={520}>
+          <GameMenuButton onClick={onGameMenu} />
+          {identified !== null && (
+            <PrimaryButton onClick={onContinue}>
+              {identified ? "Give them one last chance" : "See who wins"}
+            </PrimaryButton>
+          )}
+        </Group>
       </Stack>
     </Shell>
   );
 }
 export function GuessScreen({
   onHome,
+  onGameMenu,
   setGuessedCorrectly,
   onReveal,
 }: {
   onHome: () => void;
+  onGameMenu: () => void;
   setGuessedCorrectly: (value: boolean) => void;
   onReveal: () => void;
 }) {
@@ -534,28 +556,31 @@ export function GuessScreen({
           </Text>
         </div>
         <Text c="dimmed">Did they guess it correctly?</Text>
-        <Group>
-          <Button
-            size="md"
-            color="green"
-            onClick={() => {
-              setGuessedCorrectly(true);
-              onReveal();
-            }}
-          >
-            They got it
-          </Button>
-          <Button
-            size="md"
-            color="gray"
-            variant="light"
-            onClick={() => {
-              setGuessedCorrectly(false);
-              onReveal();
-            }}
-          >
-            They missed
-          </Button>
+        <Group justify="space-between" w="100%" maw={520}>
+          <GameMenuButton onClick={onGameMenu} />
+          <Group>
+            <Button
+              size="md"
+              color="green"
+              onClick={() => {
+                setGuessedCorrectly(true);
+                onReveal();
+              }}
+            >
+              They got it
+            </Button>
+            <Button
+              size="md"
+              color="gray"
+              variant="light"
+              onClick={() => {
+                setGuessedCorrectly(false);
+                onReveal();
+              }}
+            >
+              They missed
+            </Button>
+          </Group>
         </Group>
       </Stack>
     </Shell>
@@ -566,6 +591,7 @@ export function FinalScreen({
   names,
   identified,
   guessedCorrectly,
+  onGameMenu,
   onAgain,
   onHome,
 }: {
@@ -573,6 +599,7 @@ export function FinalScreen({
   names: string[];
   identified: boolean;
   guessedCorrectly: boolean | null;
+  onGameMenu: () => void;
   onAgain: () => void;
   onHome: () => void;
 }) {
@@ -601,7 +628,9 @@ export function FinalScreen({
               ? `${names[round.imposter]} identified the word.`
               : `${names[round.imposter]} missed the final guess.`}
         </Text>
-        <Group>
+        <Group justify="space-between" w="100%" maw={520}>
+          <GameMenuButton onClick={onGameMenu} />
+          <Group>
           <Button
             size="md"
             leftSection={<RotateCcw size={17} />}
@@ -610,8 +639,9 @@ export function FinalScreen({
             Play another round
           </Button>
           <Button size="md" variant="light" color="gray" onClick={onHome}>
-            Back to games
+            Back to categories
           </Button>
+          </Group>
         </Group>
       </Stack>
     </Shell>

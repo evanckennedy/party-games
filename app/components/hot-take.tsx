@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Home as HomeIcon, MessageCircle } from "lucide-react";
+import { ArrowRight, MessageCircle } from "lucide-react";
 import {
   Button,
   Card,
@@ -10,15 +10,17 @@ import {
   Title,
 } from "@mantine/core";
 import type { HotTake } from "../data/hot-takes";
-import { Shell } from "./shared";
+import { GameMenuButton, Shell } from "./shared";
 
 export function HotTakeScreen({
   hotTake,
   onHome,
+  onGameMenu,
   onNext,
 }: {
   hotTake: HotTake;
   onHome: () => void;
+  onGameMenu: () => void;
   onNext: () => void;
 }) {
   return (
@@ -53,14 +55,7 @@ export function HotTakeScreen({
           </Title>
         </Card>
         <Group justify="space-between">
-          <Button
-            variant="subtle"
-            color="gray"
-            leftSection={<HomeIcon size={17} />}
-            onClick={onHome}
-          >
-            Back to games
-          </Button>
+          <GameMenuButton onClick={onGameMenu} />
           <Button
             size="md"
             color="orange"

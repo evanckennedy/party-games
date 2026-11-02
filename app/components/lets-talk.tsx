@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Home as HomeIcon, MessageCircle } from "lucide-react";
+import { ArrowRight, MessageCircle } from "lucide-react";
 import {
   Badge,
   Button,
@@ -17,7 +17,7 @@ import {
   type LetsTalkCategoryId,
   type LetsTalkQuestion,
 } from "../data/lets-talk";
-import { Shell } from "./shared";
+import { GameMenuButton, Shell } from "./shared";
 import { HowToPlayButton } from "./game-guide";
 
 export function LetsTalkSetup({
@@ -94,13 +94,13 @@ export function LetsTalkQuestionScreen({
   selectedCategoryLabel,
   question,
   onHome,
-  onCategories,
+  onGameMenu,
   onNext,
 }: {
   selectedCategoryLabel: string;
   question: LetsTalkQuestion;
   onHome: () => void;
-  onCategories: () => void;
+  onGameMenu: () => void;
   onNext: () => void;
 }) {
   const badgeLabel =
@@ -145,14 +145,7 @@ export function LetsTalkQuestionScreen({
           </Title>
         </Card>
         <Group justify="space-between" wrap="wrap">
-          <Button
-            variant="subtle"
-            color="gray"
-            leftSection={<HomeIcon size={17} />}
-            onClick={onCategories}
-          >
-            Categories
-          </Button>
+          <GameMenuButton onClick={onGameMenu} />
           <Button
             size="md"
             color="violet"

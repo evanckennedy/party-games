@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowRight, Clapperboard, Home as HomeIcon } from "lucide-react";
+import { ArrowRight, Clapperboard } from "lucide-react";
 import {
   Badge,
   Button,
@@ -13,17 +13,19 @@ import {
   Title,
 } from "@mantine/core";
 import type { CharadesPrompt } from "../data/charades";
-import { PrimaryButton, Shell } from "./shared";
+import { GameMenuButton, PrimaryButton, Shell } from "./shared";
 
 type CharadesPhase = "handoff" | "reveal" | "playing" | "got-it" | "time-up";
 
 export function CharadesScreen({
   prompt,
   onHome,
+  onGameMenu,
   onNext,
 }: {
   prompt: CharadesPrompt;
   onHome: () => void;
+  onGameMenu: () => void;
   onNext: () => void;
 }) {
   const [phase, setPhase] = useState<CharadesPhase>("handoff");
@@ -143,14 +145,7 @@ export function CharadesScreen({
         </Card>
 
         <Group justify="space-between">
-          <Button
-            variant="subtle"
-            color="gray"
-            leftSection={<HomeIcon size={17} />}
-            onClick={onHome}
-          >
-            Back to games
-          </Button>
+          <GameMenuButton onClick={onGameMenu} />
           {visiblePhase === "handoff" ? (
             <PrimaryButton onClick={() => setPhase("reveal")}>
               Reveal Prompt

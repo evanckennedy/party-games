@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Eye, Home as HomeIcon, Lightbulb } from "lucide-react";
+import { ArrowRight, Eye, Lightbulb } from "lucide-react";
 import {
   Badge,
   Button,
@@ -13,7 +13,7 @@ import {
   Title,
 } from "@mantine/core";
 import type { Riddle, RiddleDifficulty } from "../data/riddles";
-import { PrimaryButton, Shell } from "./shared";
+import { GameMenuButton, PrimaryButton, Shell } from "./shared";
 import { HowToPlayButton } from "./game-guide";
 
 export type RiddleDifficultyChoice = RiddleDifficulty | "random";
@@ -70,12 +70,14 @@ export function RiddleScreen({
   onReveal,
   onNext,
   onHome,
+  onGameMenu,
 }: {
   riddle: Riddle;
   revealed: boolean;
   onReveal: () => void;
   onNext: () => void;
   onHome: () => void;
+  onGameMenu: () => void;
 }) {
   return (
     <Shell onHome={onHome} eyebrow="GUESS THE RIDDLE">
@@ -133,14 +135,7 @@ export function RiddleScreen({
           </div>
         </Card>
         <Group justify="space-between">
-          <Button
-            variant="subtle"
-            color="gray"
-            leftSection={<HomeIcon size={17} />}
-            onClick={onHome}
-          >
-            Back to games
-          </Button>
+          <GameMenuButton onClick={onGameMenu} />
           {revealed ? (
             <Button
               size="md"

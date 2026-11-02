@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight, Eye, Home as HomeIcon, Lightbulb } from "lucide-react";
+import { ArrowRight, Eye, Lightbulb } from "lucide-react";
 import {
   Badge,
   Button,
@@ -18,7 +18,7 @@ import type {
   LogicChallenge,
   LogicDifficulty,
 } from "../data/logic";
-import { PrimaryButton, Shell } from "./shared";
+import { GameMenuButton, PrimaryButton, Shell } from "./shared";
 import { HowToPlayButton } from "./game-guide";
 
 export type LogicDifficultyChoice = LogicDifficulty | "random";
@@ -72,10 +72,12 @@ export function LogicSetup({
 export function LogicScreen({
   challenge,
   onHome,
+  onGameMenu,
   onNext,
 }: {
   challenge: LogicChallenge;
   onHome: () => void;
+  onGameMenu: () => void;
   onNext: () => void;
 }) {
   const [hintVisible, setHintVisible] = useState(false);
@@ -144,14 +146,7 @@ export function LogicScreen({
           </Stack>
         </Card>
         <Group justify="space-between" wrap="wrap">
-          <Button
-            variant="subtle"
-            color="gray"
-            leftSection={<HomeIcon size={17} />}
-            onClick={onHome}
-          >
-            Back to games
-          </Button>
+          <GameMenuButton onClick={onGameMenu} />
           {solutionRevealed ? (
             <Button
               size="md"

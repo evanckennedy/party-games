@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Home as HomeIcon, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import {
   Badge,
   Button,
@@ -12,15 +12,17 @@ import {
   Title,
 } from "@mantine/core";
 import type { YesAndScene } from "../data/yes-and";
-import { Shell } from "./shared";
+import { GameMenuButton, Shell } from "./shared";
 
 export function YesAndScreen({
   scene,
   onHome,
+  onGameMenu,
   onNext,
 }: {
   scene: YesAndScene;
   onHome: () => void;
+  onGameMenu: () => void;
   onNext: () => void;
 }) {
   return (
@@ -71,14 +73,7 @@ export function YesAndScreen({
         </Card>
 
         <Group justify="space-between">
-          <Button
-            variant="subtle"
-            color="gray"
-            leftSection={<HomeIcon size={17} />}
-            onClick={onHome}
-          >
-            Back to games
-          </Button>
+          <GameMenuButton onClick={onGameMenu} />
           <Button
             size="md"
             color="green"

@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Home as HomeIcon, Sparkles } from "lucide-react";
+import { ArrowRight, Home as HomeIcon, Menu, Sparkles } from "lucide-react";
 import {
   Badge,
   Button,
@@ -87,6 +87,19 @@ export function PrimaryButton({
       {...props}
     >
       {children}
+    </Button>
+  );
+}
+
+export function GameMenuButton({ onClick }: { onClick: () => void }) {
+  return (
+    <Button
+      variant="subtle"
+      color="gray"
+      leftSection={<Menu size={17} />}
+      onClick={onClick}
+    >
+      Game menu
     </Button>
   );
 }

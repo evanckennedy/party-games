@@ -369,6 +369,8 @@ export default function Home() {
   };
   const openImposter = () => setScreen("setup");
   const startRound = () => {
+    setIdentified(null);
+    setGuessedCorrectly(null);
     const startingIndex = nextRevealStartIndex % names.length;
     const selectedCategory =
       categoryId === "random"
@@ -838,6 +840,7 @@ export default function Home() {
       <QuickWitScreen
         prompt={quickWitPrompts[quickWitPromptIndex]}
         onHome={resetHome}
+        onGameMenu={() => setScreen("quick-wit-intro")}
         onNext={nextQuickWitPrompt}
       />
     );
@@ -884,6 +887,7 @@ export default function Home() {
         onReveal={() => setTriviaAnswered(true)}
         onNext={nextTriviaQuestion}
         onHome={resetHome}
+        onGameMenu={startTrivia}
       />
     );
   if (screen === "trivia-complete")
@@ -896,6 +900,7 @@ export default function Home() {
         title={tierListTitle}
         items={tierListItems}
         onHome={resetHome}
+        onGameMenu={startTierList}
         onRestart={startTierList}
       />
     );
@@ -904,6 +909,7 @@ export default function Home() {
       <WouldYouRatherScreen
         prompt={wouldYouRatherPrompt}
         onHome={resetHome}
+        onGameMenu={() => setScreen("would-you-rather-intro")}
         onNext={nextWouldYouRather}
       />
     );
@@ -912,6 +918,7 @@ export default function Home() {
       <MostLikelyToScreen
         prompt={mostLikelyPrompt}
         onHome={resetHome}
+        onGameMenu={() => setScreen("most-likely-to-intro")}
         onNext={nextMostLikelyPrompt}
       />
     );
@@ -920,6 +927,7 @@ export default function Home() {
       <YesAndScreen
         scene={yesAndScene}
         onHome={resetHome}
+        onGameMenu={() => setScreen("yes-and-intro")}
         onNext={nextYesAndScene}
       />
     );
@@ -940,6 +948,7 @@ export default function Home() {
         onReveal={() => setRiddleRevealed(true)}
         onNext={nextRiddle}
         onHome={resetHome}
+        onGameMenu={startRiddles}
       />
     );
   if (screen === "spelling-bee-setup")
@@ -957,6 +966,7 @@ export default function Home() {
         word={spellingBeeWord}
         onNext={nextSpellingBeeWord}
         onHome={resetHome}
+        onGameMenu={startSpellingBee}
       />
     );
   if (screen === "who-am-i-setup")
@@ -971,6 +981,7 @@ export default function Home() {
       <WhoAmIScreen
         identity={whoAmIIdentity}
         onHome={resetHome}
+        onGameMenu={startWhoAmI}
         onNext={nextWhoAmIPerson}
       />
     );
@@ -988,6 +999,7 @@ export default function Home() {
         key={charadesPrompt.id}
         prompt={charadesPrompt}
         onHome={resetHome}
+        onGameMenu={() => setScreen("charades-intro")}
         onNext={nextCharade}
       />
     );
@@ -1004,6 +1016,7 @@ export default function Home() {
       <HotTakeScreen
         hotTake={hotTake}
         onHome={resetHome}
+        onGameMenu={() => setScreen("hot-take-intro")}
         onNext={nextHotTake}
       />
     );
@@ -1022,6 +1035,7 @@ export default function Home() {
         key={logicChallenge.id}
         challenge={logicChallenge}
         onHome={resetHome}
+        onGameMenu={startLogic}
         onNext={nextLogicChallenge}
       />
     );
@@ -1035,6 +1049,18 @@ export default function Home() {
   const blindItemsRanked = blindRankings.filter(
     (item): item is BlindRankingItem => item !== null,
   ).length;
+  const confirmBlindRankingExit = (destination: () => void) => {
+    if (
+      screen === "blind-rankings" &&
+      blindItemsRanked > 0 &&
+      !window.confirm("Leave this ranking? Your placements will be lost.")
+    )
+      return;
+    destination();
+  };
+  const returnToBlindRankingsMenu = () =>
+    confirmBlindRankingExit(() => setScreen("blind-rankings-setup"));
+  const exitBlindRankings = () => confirmBlindRankingExit(resetHome);
   if (
     screen === "blind-rankings" &&
     blindRankingRoundItems[blindItemsRanked]
@@ -1046,7 +1072,8 @@ export default function Home() {
         itemsRanked={blindItemsRanked}
         rankings={blindRankings}
         onAssign={assignBlindRanking}
-        onHome={resetHome}
+        onHome={exitBlindRankings}
+        onGameMenu={returnToBlindRankingsMenu}
       />
     );
   if (
@@ -1060,6 +1087,7 @@ export default function Home() {
         categoryLabel={blindRankingCategoryLabel}
         rankings={blindRankings}
         onHome={resetHome}
+        onGameMenu={() => setScreen("blind-rankings-setup")}
         onPlayAgain={restartBlindRankings}
       />
     );
@@ -1082,7 +1110,7 @@ export default function Home() {
         }
         question={letsTalkQuestion}
         onHome={resetHome}
-        onCategories={() => setScreen("lets-talk-setup")}
+        onGameMenu={startLetsTalk}
         onNext={nextLetsTalkQuestion}
       />
     );
@@ -1118,6 +1146,7 @@ export default function Home() {
         duration={debateDuration}
         setDuration={setDebateDuration}
         onHome={resetHome}
+        onGameMenu={() => setScreen("debate-players")}
         onStart={() => setScreen("debate-active")}
       />
     );
@@ -1134,6 +1163,7 @@ export default function Home() {
         )}
         durationSeconds={debateDuration}
         onHome={resetHome}
+        onGameMenu={() => setScreen("debate-players")}
         onTimeUp={() => setScreen("debate-winner")}
       />
     );
@@ -1143,6 +1173,7 @@ export default function Home() {
         defendName={debateNames[currentDebate.defendIndex]}
         attackName={debateNames[currentDebate.attackIndex]}
         onHome={resetHome}
+        onGameMenu={() => setScreen("debate-players")}
         onChoose={chooseDebateWinner}
       />
     );
@@ -1156,6 +1187,7 @@ export default function Home() {
         }
         isTie={debateWinner === "tie"}
         onHome={resetHome}
+        onGameMenu={() => setScreen("debate-players")}
         onNext={nextDebate}
       />
     );
@@ -1186,6 +1218,7 @@ export default function Home() {
         revealed={revealed}
         setRevealed={setRevealed}
         onHome={resetHome}
+        onGameMenu={openImposter}
         onNext={() => {
           setRevealIndex((index) => index + 1);
           setRevealed(false);
@@ -1197,6 +1230,7 @@ export default function Home() {
     return (
       <RulesScreen
         onHome={resetHome}
+        onGameMenu={openImposter}
         onContinue={() => setScreen("discussion")}
       />
     );
@@ -1204,6 +1238,7 @@ export default function Home() {
     return (
       <DiscussionScreen
         onHome={resetHome}
+        onGameMenu={openImposter}
         onReveal={() => setScreen("result")}
       />
     );
@@ -1211,6 +1246,7 @@ export default function Home() {
     return (
       <ResultScreen
         onHome={resetHome}
+        onGameMenu={openImposter}
         names={names}
         round={round}
         identified={identified}
@@ -1222,6 +1258,7 @@ export default function Home() {
     return (
       <GuessScreen
         onHome={resetHome}
+        onGameMenu={openImposter}
         setGuessedCorrectly={setGuessedCorrectly}
         onReveal={() => setScreen("final")}
       />
@@ -1232,6 +1269,7 @@ export default function Home() {
       names={names}
       identified={identified ?? false}
       guessedCorrectly={guessedCorrectly}
+      onGameMenu={openImposter}
       onAgain={startRound}
       onHome={resetHome}
     />

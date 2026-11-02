@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Home as HomeIcon, WandSparkles } from "lucide-react";
+import { ArrowRight, WandSparkles } from "lucide-react";
 import {
   Badge,
   Button,
@@ -11,15 +11,17 @@ import {
   ThemeIcon,
   Title,
 } from "@mantine/core";
-import { Shell } from "./shared";
+import { GameMenuButton, Shell } from "./shared";
 
 export function QuickWitScreen({
   prompt,
   onHome,
+  onGameMenu,
   onNext,
 }: {
   prompt: string;
   onHome: () => void;
+  onGameMenu: () => void;
   onNext: () => void;
 }) {
   return (
@@ -69,14 +71,7 @@ export function QuickWitScreen({
           </div>
         </Card>
         <Group justify="space-between">
-          <Button
-            variant="subtle"
-            color="gray"
-            leftSection={<HomeIcon size={17} />}
-            onClick={onHome}
-          >
-            Exit
-          </Button>
+          <GameMenuButton onClick={onGameMenu} />
           <Button
             size="md"
             color="teal"

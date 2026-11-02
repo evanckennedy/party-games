@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Home as HomeIcon, UsersRound } from "lucide-react";
+import { ArrowRight, UsersRound } from "lucide-react";
 import {
   Badge,
   Button,
@@ -11,15 +11,17 @@ import {
   Title,
 } from "@mantine/core";
 import type { MostLikelyPrompt } from "../data/most-likely-to";
-import { Shell } from "./shared";
+import { GameMenuButton, Shell } from "./shared";
 
 export function MostLikelyToScreen({
   prompt,
   onHome,
+  onGameMenu,
   onNext,
 }: {
   prompt: MostLikelyPrompt;
   onHome: () => void;
+  onGameMenu: () => void;
   onNext: () => void;
 }) {
   return (
@@ -56,14 +58,7 @@ export function MostLikelyToScreen({
         </Card>
 
         <Group justify="space-between">
-          <Button
-            variant="subtle"
-            color="gray"
-            leftSection={<HomeIcon size={17} />}
-            onClick={onHome}
-          >
-            Back to games
-          </Button>
+          <GameMenuButton onClick={onGameMenu} />
           <Button
             size="md"
             color="cyan"

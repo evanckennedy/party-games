@@ -5,7 +5,6 @@ import {
   ArrowLeft,
   Check,
   Clock3,
-  Home as HomeIcon,
   Minus,
   Plus,
   Shield,
@@ -32,7 +31,7 @@ import {
   type DebateCategoryChoice,
   type DebateClaim,
 } from "../data/debate";
-import { PrimaryButton, Shell } from "./shared";
+import { GameMenuButton, PrimaryButton, Shell } from "./shared";
 import { HowToPlayButton } from "./game-guide";
 
 export type DebateDuration = 30 | 60 | 120 | 180 | 300;
@@ -223,6 +222,7 @@ export function DebateReadyScreen({
   duration,
   setDuration,
   onHome,
+  onGameMenu,
   onStart,
 }: {
   claim: DebateClaim;
@@ -232,6 +232,7 @@ export function DebateReadyScreen({
   duration: DebateDuration;
   setDuration: (duration: DebateDuration) => void;
   onHome: () => void;
+  onGameMenu: () => void;
   onStart: () => void;
 }) {
   return (
@@ -289,7 +290,8 @@ export function DebateReadyScreen({
             }))}
           />
         </div>
-        <Group justify="flex-end">
+        <Group justify="space-between">
+          <GameMenuButton onClick={onGameMenu} />
           <Button
             size="md"
             color="red"
@@ -339,6 +341,7 @@ export function DebateTimerScreen({
   audienceNames,
   durationSeconds,
   onHome,
+  onGameMenu,
   onTimeUp,
 }: {
   claim: DebateClaim;
@@ -347,6 +350,7 @@ export function DebateTimerScreen({
   audienceNames: string[];
   durationSeconds: DebateDuration;
   onHome: () => void;
+  onGameMenu: () => void;
   onTimeUp: () => void;
 }) {
   const [remainingSeconds, setRemainingSeconds] =
@@ -416,6 +420,9 @@ export function DebateTimerScreen({
         <Button size="lg" color="red" variant="light" onClick={onTimeUp}>
           Argument Done
         </Button>
+        <Group justify="flex-start" w="100%">
+          <GameMenuButton onClick={onGameMenu} />
+        </Group>
       </Stack>
     </Shell>
   );
@@ -425,11 +432,13 @@ export function DebateWinnerScreen({
   defendName,
   attackName,
   onHome,
+  onGameMenu,
   onChoose,
 }: {
   defendName: string;
   attackName: string;
   onHome: () => void;
+  onGameMenu: () => void;
   onChoose: (winner: DebateWinner) => void;
 }) {
   return (
@@ -470,6 +479,9 @@ export function DebateWinnerScreen({
             It&apos;s a tie
           </Button>
         </Stack>
+        <Group justify="flex-start" w="100%" maw={480}>
+          <GameMenuButton onClick={onGameMenu} />
+        </Group>
       </Stack>
     </Shell>
   );
@@ -479,11 +491,13 @@ export function DebateResultScreen({
   winnerName,
   isTie,
   onHome,
+  onGameMenu,
   onNext,
 }: {
   winnerName: string;
   isTie: boolean;
   onHome: () => void;
+  onGameMenu: () => void;
   onNext: () => void;
 }) {
   return (
@@ -506,14 +520,7 @@ export function DebateResultScreen({
           </Text>
         </div>
         <Group>
-          <Button
-            variant="subtle"
-            color="gray"
-            leftSection={<HomeIcon size={17} />}
-            onClick={onHome}
-          >
-            Back to games
-          </Button>
+          <GameMenuButton onClick={onGameMenu} />
           <PrimaryButton onClick={onNext}>Next Debate</PrimaryButton>
         </Group>
       </Stack>
