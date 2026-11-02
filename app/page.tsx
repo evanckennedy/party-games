@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { categories, type ImposterMode } from "./data/imposter";
-import { scenesPrompts } from "./data/scenes-data";
+import { quickWitPrompts } from "./data/quick-wit-data";
 import { secureRandomIndex, secureShuffle } from "./lib/random";
 import {
   triviaCategories,
@@ -13,7 +13,7 @@ import {
 } from "./data/trivia";
 import { HomeScreen } from "./components/home-screen";
 import { GameIntro } from "./components/game-guide";
-import { ScenesScreen } from "./components/scenes";
+import { QuickWitScreen } from "./components/quick-wit";
 import { TriviaComplete, TriviaScreen, TriviaSetup } from "./components/trivia";
 import { TierListBoard, TierListSetup } from "./components/tier-list";
 import { WouldYouRatherScreen } from "./components/would-you-rather";
@@ -125,8 +125,8 @@ type Screen =
   | "result"
   | "guess"
   | "final"
-  | "scenes-intro"
-  | "scenes"
+  | "quick-wit-intro"
+  | "quick-wit"
   | "trivia-setup"
   | "trivia"
   | "trivia-complete"
@@ -200,8 +200,8 @@ export default function Home() {
   const [guessedCorrectly, setGuessedCorrectly] = useState<boolean | null>(
     null,
   );
-  const [promptIndex, setPromptIndex] = useState(0);
-  const [seenPrompts, setSeenPrompts] = useState<number[]>([0]);
+  const [quickWitPromptIndex, setQuickWitPromptIndex] = useState(0);
+  const [seenQuickWitPrompts, setSeenQuickWitPrompts] = useState<number[]>([0]);
   const [triviaCategory, setTriviaCategory] = useState<
     TriviaCategoryId | "random"
   >("random");
@@ -389,26 +389,28 @@ export default function Home() {
     setRevealed(false);
     setScreen("reveal");
   };
-  const startScenes = () => {
-    const firstPrompt = secureRandomIndex(scenesPrompts.length);
-    setPromptIndex(firstPrompt);
-    setSeenPrompts([firstPrompt]);
-    setScreen("scenes");
+  const startQuickWit = () => {
+    const firstPrompt = secureRandomIndex(quickWitPrompts.length);
+    setQuickWitPromptIndex(firstPrompt);
+    setSeenQuickWitPrompts([firstPrompt]);
+    setScreen("quick-wit");
   };
-  const nextPrompt = () => {
-    const unvisitedPrompts = scenesPrompts
+  const nextQuickWitPrompt = () => {
+    const unvisitedPrompts = quickWitPrompts
       .map((_, index) => index)
-      .filter((index) => !seenPrompts.includes(index));
+      .filter((index) => !seenQuickWitPrompts.includes(index));
     const availablePrompts =
       unvisitedPrompts.length > 0
         ? unvisitedPrompts
-        : scenesPrompts
+        : quickWitPrompts
             .map((_, index) => index)
-            .filter((index) => index !== promptIndex);
+            .filter((index) => index !== quickWitPromptIndex);
     const next = availablePrompts[secureRandomIndex(availablePrompts.length)];
-    setPromptIndex(next);
-    setSeenPrompts(
-      unvisitedPrompts.length > 0 ? [...seenPrompts, next] : [next],
+    setQuickWitPromptIndex(next);
+    setSeenQuickWitPrompts(
+      unvisitedPrompts.length > 0
+        ? [...seenQuickWitPrompts, next]
+        : [next],
     );
   };
   const getTriviaPool = () => {
@@ -806,7 +808,7 @@ export default function Home() {
     return (
       <HomeScreen
         onImposter={openImposter}
-        onScenes={() => setScreen("scenes-intro")}
+        onQuickWit={() => setScreen("quick-wit-intro")}
         onTrivia={startTrivia}
         onTierList={startTierList}
         onWouldYouRather={() => setScreen("would-you-rather-intro")}
@@ -823,20 +825,20 @@ export default function Home() {
         onLetsTalk={startLetsTalk}
       />
     );
-  if (screen === "scenes-intro")
+  if (screen === "quick-wit-intro")
     return (
       <GameIntro
-        game="scenes"
+        game="quick-wit"
         onHome={resetHome}
-        onStart={startScenes}
+        onStart={startQuickWit}
       />
     );
-  if (screen === "scenes")
+  if (screen === "quick-wit")
     return (
-      <ScenesScreen
-        prompt={scenesPrompts[promptIndex]}
+      <QuickWitScreen
+        prompt={quickWitPrompts[quickWitPromptIndex]}
         onHome={resetHome}
-        onNext={nextPrompt}
+        onNext={nextQuickWitPrompt}
       />
     );
   if (screen === "would-you-rather-intro")

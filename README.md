@@ -5,7 +5,7 @@ Party Games is a mobile-first collection of social games designed for groups sha
 ## Games
 
 - **Imposter**: Secret-word social deduction with Classic and Undercover modes.
-- **Scenes**: A stream of funny improv prompts for the group.
+- **Quick Wit**: Fast improv prompts for one-liners, ridiculous excuses, and quick performances.
 - **Trivia**: Curated questions with category and difficulty choices.
 - **Tier List**: Preset or custom topics that groups rank together.
 - **Would You Rather?**: Funny, social dilemmas for the group to debate.

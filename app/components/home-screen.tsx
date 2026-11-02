@@ -32,7 +32,7 @@ import { Shell } from "./shared";
 
 export function HomeScreen({
   onImposter,
-  onScenes,
+  onQuickWit,
   onTrivia,
   onTierList,
   onWouldYouRather,
@@ -49,7 +49,7 @@ export function HomeScreen({
   onLetsTalk,
 }: {
   onImposter: () => void;
-  onScenes: () => void;
+  onQuickWit: () => void;
   onTrivia: () => void;
   onTierList: () => void;
   onWouldYouRather: () => void;
@@ -94,12 +94,12 @@ export function HomeScreen({
             description="One secret. One liar. Can the group spot them?"
           />
           <GameCard
-            onClick={onScenes}
+            onClick={onQuickWit}
             color="teal"
             icon={<WandSparkles size={28} />}
             badge="No setup"
-            title="Scenes"
-            description="Funny prompts for unforgettable performances."
+            title="Quick Wit"
+            description="Quick prompts for instant one-liners and ridiculous performances."
           />
           <GameCard
             onClick={onTrivia}

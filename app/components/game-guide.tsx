@@ -17,7 +17,7 @@ import { PrimaryButton, Shell } from "./shared";
 
 export type GameGuideId =
   | "imposter"
-  | "scenes"
+  | "quick-wit"
   | "trivia"
   | "tier-list"
   | "would-you-rather"
@@ -47,13 +47,14 @@ const gameGuides: Record<
       "Undercover mode gives one player a similar, different word instead.",
     ],
   },
-  scenes: {
-    title: "Scenes",
-    summary: "Use a prompt as inspiration for a funny group performance.",
+  "quick-wit": {
+    title: "Quick Wit",
+    summary:
+      "Read a setup aloud. Someone jumps in immediately with a funny line, excuse, reaction, or quick performance—no discussion needed.",
     steps: [
-      "Read the scene prompt aloud.",
-      "Act it out, improvise, or build a bit together.",
-      "Tap Next Prompt whenever you want a new idea.",
+      "Read the prompt aloud.",
+      "Jump in with the funniest line, excuse, or reaction you can—or act it out.",
+      "Keep it moving. Tap Next Prompt for another setup.",
     ],
   },
   trivia: {

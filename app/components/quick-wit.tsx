@@ -13,7 +13,7 @@ import {
 } from "@mantine/core";
 import { Shell } from "./shared";
 
-export function ScenesScreen({
+export function QuickWitScreen({
   prompt,
   onHome,
   onNext,
@@ -23,7 +23,7 @@ export function ScenesScreen({
   onNext: () => void;
 }) {
   return (
-    <Shell onHome={onHome} eyebrow="SCENES">
+    <Shell onHome={onHome} eyebrow="QUICK WIT">
       <Stack gap="xl">
         <div>
           <Group justify="space-between" align="flex-start">
@@ -31,14 +31,14 @@ export function ScenesScreen({
               <Badge color="teal" variant="light" mb="md">
                 PROMPT
               </Badge>
-              <Title order={1}>Scenes</Title>
+              <Title order={1}>Quick Wit</Title>
             </div>
             <ThemeIcon size={48} radius="md" color="teal" variant="light">
               <WandSparkles size={24} />
             </ThemeIcon>
           </Group>
           <Text c="dimmed" mt="sm">
-            A prompt generator for your group&apos;s next great bit.
+            Read the setup. Fire back a funny line, excuse, or performance.
           </Text>
         </div>
         <Card
@@ -56,7 +56,7 @@ export function ScenesScreen({
         >
           <div>
             <Text c="teal.2" fw={700} size="sm" tt="uppercase" mb="lg">
-              Your scene is...
+              Your prompt is...
             </Text>
             <Title
               order={2}
