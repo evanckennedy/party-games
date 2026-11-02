@@ -268,6 +268,7 @@ export function RevealScreen({
   mode,
   names,
   index,
+  startIndex,
   revealed,
   setRevealed,
   onHome,
@@ -278,6 +279,7 @@ export function RevealScreen({
   mode: ImposterMode;
   names: string[];
   index: number;
+  startIndex: number;
   revealed: boolean;
   setRevealed: (value: boolean) => void;
   onHome: () => void;
@@ -285,7 +287,8 @@ export function RevealScreen({
   onRules: () => void;
 }) {
   const isLast = index === names.length - 1;
-  const isImposter = round.imposter === index;
+  const playerIndex = (startIndex + index) % names.length;
+  const isImposter = round.imposter === playerIndex;
   const isClassicImposter = mode === "classic" && isImposter;
   return (
     <Shell onHome={onHome} eyebrow="PRIVATE REVEAL">
@@ -299,12 +302,12 @@ export function RevealScreen({
         />
         <div>
           <Text c="orange" fw={700} size="sm">
-            PLAYER {index + 1} OF {names.length}
+            PLAYER {playerIndex + 1} OF {names.length}
           </Text>
           <Title order={1} mt="xs">
             Pass the phone to
             <br />
-            {names[index]}
+            {names[playerIndex]}
           </Title>
           <Text c="dimmed" mt="md">
             Make sure nobody else is looking.

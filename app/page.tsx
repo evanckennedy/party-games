@@ -186,6 +186,8 @@ export default function Home() {
   const [mode, setMode] = useState<ImposterMode>("classic");
   const [round, setRound] = useState<ImposterRound | null>(null);
   const [revealIndex, setRevealIndex] = useState(0);
+  const [revealStartIndex, setRevealStartIndex] = useState(0);
+  const [nextRevealStartIndex, setNextRevealStartIndex] = useState(0);
   const [revealed, setRevealed] = useState(false);
   const [identified, setIdentified] = useState<boolean | null>(null);
   const [guessedCorrectly, setGuessedCorrectly] = useState<boolean | null>(
@@ -318,6 +320,8 @@ export default function Home() {
     setScreen("home");
     setStep(1);
     setRound(null);
+    setRevealStartIndex(0);
+    setNextRevealStartIndex(0);
     setRevealed(false);
     setIdentified(null);
     setGuessedCorrectly(null);
@@ -358,6 +362,7 @@ export default function Home() {
   };
   const openImposter = () => setScreen("setup");
   const startRound = () => {
+    const startingIndex = nextRevealStartIndex % names.length;
     const selectedCategory =
       categoryId === "random"
         ? categories[secureRandomIndex(categories.length)]
@@ -371,6 +376,8 @@ export default function Home() {
       imposter: secureRandomIndex(names.length),
       category: selectedCategory.label,
     });
+    setRevealStartIndex(startingIndex);
+    setNextRevealStartIndex((startingIndex + 1) % names.length);
     setRevealIndex(0);
     setRevealed(false);
     setScreen("reveal");
@@ -1118,6 +1125,7 @@ export default function Home() {
         mode={mode}
         names={names}
         index={revealIndex}
+        startIndex={revealStartIndex}
         revealed={revealed}
         setRevealed={setRevealed}
         onHome={resetHome}
