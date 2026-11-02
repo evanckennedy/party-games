@@ -27,6 +27,7 @@ import {
   type TriviaQuestion,
 } from "../data/trivia";
 import { PrimaryButton, Shell } from "./shared";
+import { HowToPlayButton } from "./game-guide";
 
 export function TriviaSetup({
   category,
@@ -55,6 +56,9 @@ export function TriviaSetup({
             Choose a category and difficulty. The room takes care of the rest.
           </Text>
         </div>
+        <Group justify="flex-end">
+          <HowToPlayButton game="trivia" />
+        </Group>
         <div>
           <Text fw={700} mb="sm">
             Category

@@ -17,6 +17,7 @@ import type {
   SpellingBeeWord,
 } from "../data/spelling-bee";
 import { PrimaryButton, Shell } from "./shared";
+import { HowToPlayButton } from "./game-guide";
 
 export type SpellingBeeDifficultyChoice = SpellingBeeDifficulty | "random";
 
@@ -43,6 +44,9 @@ export function SpellingBeeSetup({
             Random chooses a new difficulty for every word.
           </Text>
         </div>
+        <Group justify="flex-end">
+          <HowToPlayButton game="spelling-bee" />
+        </Group>
         <SegmentedControl
           fullWidth
           size="md"

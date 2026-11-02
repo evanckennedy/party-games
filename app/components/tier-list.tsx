@@ -47,6 +47,7 @@ import {
 } from "@mantine/core";
 import { tierPresets, type TierPresetGroup } from "../data/tier-list";
 import { PrimaryButton, Shell } from "./shared";
+import { HowToPlayButton } from "./game-guide";
 
 type TierId = "unranked" | "S" | "A" | "B" | "C" | "D";
 type BoardItem = { id: string; label: string; tier: TierId };
@@ -121,6 +122,9 @@ export function TierListSetup({
             Pick a topic, then let the arguments begin.
           </Text>
         </div>
+        <Group justify="flex-end">
+          <HowToPlayButton game="tier-list" />
+        </Group>
         <SegmentedControl
           fullWidth
           size="md"

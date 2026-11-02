@@ -14,6 +14,7 @@ import {
 } from "@mantine/core";
 import type { Riddle, RiddleDifficulty } from "../data/riddles";
 import { PrimaryButton, Shell } from "./shared";
+import { HowToPlayButton } from "./game-guide";
 
 export type RiddleDifficultyChoice = RiddleDifficulty | "random";
 
@@ -40,6 +41,9 @@ export function RiddleSetup({
             Random mixes easy, medium, and hard riddles as you play.
           </Text>
         </div>
+        <Group justify="flex-end">
+          <HowToPlayButton game="riddles" />
+        </Group>
         <SegmentedControl
           fullWidth
           size="md"

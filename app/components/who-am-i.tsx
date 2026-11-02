@@ -18,6 +18,7 @@ import {
   type WhoAmIIdentity,
 } from "../data/who-am-i";
 import { Shell } from "./shared";
+import { HowToPlayButton } from "./game-guide";
 
 export function WhoAmISetup({
   onHome,
@@ -39,6 +40,9 @@ export function WhoAmISetup({
             category.
           </Text>
         </div>
+        <Group justify="flex-end">
+          <HowToPlayButton game="who-am-i" />
+        </Group>
         <SimpleGrid cols={{ base: 2, sm: 3 }} spacing="sm">
           <CategoryCard
             label="Random"

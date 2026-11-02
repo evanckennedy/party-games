@@ -33,6 +33,7 @@ import {
   type DebateClaim,
 } from "../data/debate";
 import { PrimaryButton, Shell } from "./shared";
+import { HowToPlayButton } from "./game-guide";
 
 export type DebateDuration = 30 | 60 | 120 | 180 | 300;
 export type DebateWinner = "defend" | "attack" | "tie";
@@ -73,6 +74,9 @@ export function DebatePlayersSetup({
             Add 2–12 players. Two will debate; everyone else is the audience.
           </Text>
         </div>
+        <Group justify="flex-end">
+          <HowToPlayButton game="debate" />
+        </Group>
         <Stack gap="sm">
           {names.map((name, index) => (
             <Group key={index} wrap="nowrap">

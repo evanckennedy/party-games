@@ -19,6 +19,7 @@ import type {
   LogicDifficulty,
 } from "../data/logic";
 import { PrimaryButton, Shell } from "./shared";
+import { HowToPlayButton } from "./game-guide";
 
 export type LogicDifficultyChoice = LogicDifficulty | "random";
 
@@ -45,6 +46,9 @@ export function LogicSetup({
             Random picks a new difficulty for each challenge.
           </Text>
         </div>
+        <Group justify="flex-end">
+          <HowToPlayButton game="logic" />
+        </Group>
         <SegmentedControl
           fullWidth
           size="md"

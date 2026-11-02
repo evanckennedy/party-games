@@ -18,6 +18,7 @@ import {
   type LetsTalkQuestion,
 } from "../data/lets-talk";
 import { Shell } from "./shared";
+import { HowToPlayButton } from "./game-guide";
 
 export function LetsTalkSetup({
   onHome,
@@ -38,6 +39,9 @@ export function LetsTalkSetup({
             Pick a category and see where the conversation goes.
           </Text>
         </div>
+        <Group justify="flex-end">
+          <HowToPlayButton game="lets-talk" />
+        </Group>
         <SimpleGrid cols={{ base: 2, sm: 3 }} spacing="sm">
           <CategoryCard
             label="Random"

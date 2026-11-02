@@ -29,6 +29,7 @@ import {
 } from "@mantine/core";
 import { categories, type ImposterMode } from "../data/imposter";
 import { PrimaryButton, Shell } from "./shared";
+import { HowToPlayButton } from "./game-guide";
 
 export type ImposterRound = {
   secret: string;
@@ -69,6 +70,9 @@ export function ImposterSetup({
     <Shell onHome={onHome} eyebrow="IMPOSTER">
       <Stack gap="xl">
         <SetupHeader step={step} />
+        <Group justify="flex-end">
+          <HowToPlayButton game="imposter" />
+        </Group>
         {step === 1 && (
           <div>
             <Title order={1}>Who&apos;s playing?</Title>

@@ -12,6 +12,7 @@ import {
   type TriviaQuestion,
 } from "./data/trivia";
 import { HomeScreen } from "./components/home-screen";
+import { GameIntro } from "./components/game-guide";
 import { ScenesScreen } from "./components/scenes";
 import { TriviaComplete, TriviaScreen, TriviaSetup } from "./components/trivia";
 import { TierListBoard, TierListSetup } from "./components/tier-list";
@@ -124,6 +125,7 @@ type Screen =
   | "result"
   | "guess"
   | "final"
+  | "scenes-intro"
   | "scenes"
   | "trivia-setup"
   | "trivia"
@@ -131,8 +133,11 @@ type Screen =
   | "tier-list-setup"
   | "tier-list"
   | "would-you-rather"
+  | "would-you-rather-intro"
   | "most-likely-to"
+  | "most-likely-to-intro"
   | "yes-and"
+  | "yes-and-intro"
   | "debate-players"
   | "debate-category"
   | "debate-ready"
@@ -146,7 +151,9 @@ type Screen =
   | "who-am-i-setup"
   | "who-am-i"
   | "charades"
+  | "charades-intro"
   | "hot-take"
+  | "hot-take-intro"
   | "logic-setup"
   | "logic"
   | "blind-rankings-setup"
@@ -799,21 +806,29 @@ export default function Home() {
     return (
       <HomeScreen
         onImposter={openImposter}
-        onScenes={startScenes}
+        onScenes={() => setScreen("scenes-intro")}
         onTrivia={startTrivia}
         onTierList={startTierList}
-        onWouldYouRather={startWouldYouRather}
-        onMostLikelyTo={startMostLikelyTo}
-        onYesAnd={startYesAnd}
+        onWouldYouRather={() => setScreen("would-you-rather-intro")}
+        onMostLikelyTo={() => setScreen("most-likely-to-intro")}
+        onYesAnd={() => setScreen("yes-and-intro")}
         onRiddles={startRiddles}
         onSpellingBee={startSpellingBee}
         onWhoAmI={startWhoAmI}
-        onCharades={startCharades}
-        onHotTake={startHotTakes}
+        onCharades={() => setScreen("charades-intro")}
+        onHotTake={() => setScreen("hot-take-intro")}
         onLogic={startLogic}
         onDebate={() => setScreen("debate-players")}
         onBlindRankings={() => setScreen("blind-rankings-setup")}
         onLetsTalk={startLetsTalk}
+      />
+    );
+  if (screen === "scenes-intro")
+    return (
+      <GameIntro
+        game="scenes"
+        onHome={resetHome}
+        onStart={startScenes}
       />
     );
   if (screen === "scenes")
@@ -822,6 +837,30 @@ export default function Home() {
         prompt={scenesPrompts[promptIndex]}
         onHome={resetHome}
         onNext={nextPrompt}
+      />
+    );
+  if (screen === "would-you-rather-intro")
+    return (
+      <GameIntro
+        game="would-you-rather"
+        onHome={resetHome}
+        onStart={startWouldYouRather}
+      />
+    );
+  if (screen === "most-likely-to-intro")
+    return (
+      <GameIntro
+        game="most-likely-to"
+        onHome={resetHome}
+        onStart={startMostLikelyTo}
+      />
+    );
+  if (screen === "yes-and-intro")
+    return (
+      <GameIntro
+        game="yes-and"
+        onHome={resetHome}
+        onStart={startYesAnd}
       />
     );
   if (screen === "trivia-setup")
@@ -933,6 +972,14 @@ export default function Home() {
         onNext={nextWhoAmIPerson}
       />
     );
+  if (screen === "charades-intro")
+    return (
+      <GameIntro
+        game="charades"
+        onHome={resetHome}
+        onStart={startCharades}
+      />
+    );
   if (screen === "charades" && charadesPrompt)
     return (
       <CharadesScreen
@@ -940,6 +987,14 @@ export default function Home() {
         prompt={charadesPrompt}
         onHome={resetHome}
         onNext={nextCharade}
+      />
+    );
+  if (screen === "hot-take-intro")
+    return (
+      <GameIntro
+        game="hot-take"
+        onHome={resetHome}
+        onStart={startHotTakes}
       />
     );
   if (screen === "hot-take" && hotTake)

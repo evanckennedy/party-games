@@ -18,6 +18,7 @@ import {
   type BlindRankingItem,
 } from "../data/blind-rankings";
 import { Shell } from "./shared";
+import { HowToPlayButton } from "./game-guide";
 
 const rankLabels = ["Best", "", "", "", "Worst"];
 
@@ -41,6 +42,9 @@ export function BlindRankingsSetup({
             the next item appears.
           </Text>
         </div>
+        <Group justify="flex-end">
+          <HowToPlayButton game="blind-rankings" />
+        </Group>
         <SimpleGrid cols={{ base: 2, sm: 3 }} spacing="sm">
           <CategoryCard
             label="Random"
