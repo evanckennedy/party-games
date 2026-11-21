@@ -261,7 +261,10 @@ export function HomeScreen({
   );
 
   return (
-    <Shell onHome={() => undefined} eyebrow="GAME NIGHT">
+    <Shell
+      onHome={() => setSelectedCategory(null)}
+      eyebrow="GAME NIGHT"
+    >
       <Stack gap={42}>
         <div>
           <Badge color="orange" variant="light" mb="md">
