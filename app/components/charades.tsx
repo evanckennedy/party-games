@@ -13,7 +13,13 @@ import {
   Title,
 } from "@mantine/core";
 import type { CharadesPrompt } from "../data/charades";
-import { GameMenuButton, PrimaryButton, Shell } from "./shared";
+import {
+  GameMenuButton,
+  PrimaryButton,
+  Shell,
+  TimerSoundToggle,
+  useTimerSound,
+} from "./shared";
 
 type CharadesPhase = "handoff" | "reveal" | "playing" | "got-it" | "time-up";
 
@@ -32,6 +38,10 @@ export function CharadesScreen({
 }) {
   const [phase, setPhase] = useState<CharadesPhase>("handoff");
   const [secondsLeft, setSecondsLeft] = useState(60);
+  const [timerSoundEnabled, setTimerSoundEnabled] = useState(false);
+  const playTimerSound = useTimerSound();
+  const visiblePhase =
+    phase === "playing" && secondsLeft === 0 ? "time-up" : phase;
 
   useEffect(() => {
     if (phase !== "playing" || secondsLeft === 0) return;
@@ -43,8 +53,17 @@ export function CharadesScreen({
     return () => window.clearTimeout(timeout);
   }, [phase, secondsLeft]);
 
-  const visiblePhase =
-    phase === "playing" && secondsLeft === 0 ? "time-up" : phase;
+  useEffect(() => {
+    if (!timerSoundEnabled || phase !== "playing") return;
+    if (secondsLeft <= 5 && secondsLeft > 0) playTimerSound("warning");
+  }, [phase, playTimerSound, secondsLeft, timerSoundEnabled]);
+
+  useEffect(() => {
+    if (timerSoundEnabled && visiblePhase === "time-up") {
+      playTimerSound("finish");
+    }
+  }, [playTimerSound, timerSoundEnabled, visiblePhase]);
+
   const result = visiblePhase === "got-it" || visiblePhase === "time-up";
   const title =
     visiblePhase === "got-it"
@@ -112,12 +131,17 @@ export function CharadesScreen({
                 >
                   Swap prompt
                 </Button>
+                <TimerSoundToggle
+                  enabled={timerSoundEnabled}
+                  onChange={setTimerSoundEnabled}
+                />
                 <Button
                   size="md"
                   color="orange"
                   onClick={() => {
                     setSecondsLeft(60);
                     setPhase("playing");
+                    if (timerSoundEnabled) playTimerSound("start");
                   }}
                 >
                   I&apos;m Ready
@@ -136,6 +160,10 @@ export function CharadesScreen({
                 {secondsLeft}
               </Title>
               <Text c="dimmed">Act it out without speaking.</Text>
+              <TimerSoundToggle
+                enabled={timerSoundEnabled}
+                onChange={setTimerSoundEnabled}
+              />
               <Button
                 size="md"
                 color="orange"

@@ -252,6 +252,7 @@ export default function Home() {
   const [debateCategory, setDebateCategory] =
     useState<DebateCategoryChoice>("random");
   const [debateDuration, setDebateDuration] = useState<DebateDuration>(60);
+  const [debateTimerSoundEnabled, setDebateTimerSoundEnabled] = useState(false);
   const [currentDebate, setCurrentDebate] = useState<CurrentDebate | null>(
     null,
   );
@@ -1194,6 +1195,8 @@ export default function Home() {
         )}
         duration={debateDuration}
         setDuration={setDebateDuration}
+        timerSoundEnabled={debateTimerSoundEnabled}
+        setTimerSoundEnabled={setDebateTimerSoundEnabled}
         onHome={resetHome}
         onGameMenu={() => setScreen("debate-players")}
         onSwap={swapDebateTopic}
@@ -1212,6 +1215,8 @@ export default function Home() {
             index !== currentDebate.attackIndex,
         )}
         durationSeconds={debateDuration}
+        timerSoundEnabled={debateTimerSoundEnabled}
+        setTimerSoundEnabled={setDebateTimerSoundEnabled}
         onHome={resetHome}
         onGameMenu={() => setScreen("debate-players")}
         onTimeUp={() => setScreen("debate-winner")}

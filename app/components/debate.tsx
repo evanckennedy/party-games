@@ -32,7 +32,13 @@ import {
   type DebateCategoryChoice,
   type DebateClaim,
 } from "../data/debate";
-import { GameMenuButton, PrimaryButton, Shell } from "./shared";
+import {
+  GameMenuButton,
+  PrimaryButton,
+  Shell,
+  TimerSoundToggle,
+  useTimerSound,
+} from "./shared";
 import { HowToPlayButton } from "./game-guide";
 
 export type DebateDuration = 30 | 60 | 120 | 180 | 300;
@@ -222,6 +228,8 @@ export function DebateReadyScreen({
   audienceNames,
   duration,
   setDuration,
+  timerSoundEnabled,
+  setTimerSoundEnabled,
   onHome,
   onGameMenu,
   onSwap,
@@ -233,11 +241,15 @@ export function DebateReadyScreen({
   audienceNames: string[];
   duration: DebateDuration;
   setDuration: (duration: DebateDuration) => void;
+  timerSoundEnabled: boolean;
+  setTimerSoundEnabled: (enabled: boolean) => void;
   onHome: () => void;
   onGameMenu: () => void;
   onSwap: () => void;
   onStart: () => void;
 }) {
+  const playTimerSound = useTimerSound();
+
   return (
     <Shell onHome={onHome} eyebrow="DEBATE">
       <Stack gap="xl">
@@ -293,6 +305,10 @@ export function DebateReadyScreen({
             }))}
           />
         </div>
+        <TimerSoundToggle
+          enabled={timerSoundEnabled}
+          onChange={setTimerSoundEnabled}
+        />
         <Group justify="space-between">
           <GameMenuButton onClick={onGameMenu} />
           <Group gap="sm">
@@ -308,7 +324,10 @@ export function DebateReadyScreen({
               size="md"
               color="red"
               leftSection={<Swords size={17} />}
-              onClick={onStart}
+              onClick={() => {
+                if (timerSoundEnabled) playTimerSound("start");
+                onStart();
+              }}
             >
               Start Debate
             </Button>
@@ -353,6 +372,8 @@ export function DebateTimerScreen({
   attackName,
   audienceNames,
   durationSeconds,
+  timerSoundEnabled,
+  setTimerSoundEnabled,
   onHome,
   onGameMenu,
   onTimeUp,
@@ -362,6 +383,8 @@ export function DebateTimerScreen({
   attackName: string;
   audienceNames: string[];
   durationSeconds: DebateDuration;
+  timerSoundEnabled: boolean;
+  setTimerSoundEnabled: (enabled: boolean) => void;
   onHome: () => void;
   onGameMenu: () => void;
   onTimeUp: () => void;
@@ -369,6 +392,7 @@ export function DebateTimerScreen({
   const [remainingSeconds, setRemainingSeconds] =
     useState<number>(durationSeconds);
   const progress = (remainingSeconds / durationSeconds) * 100;
+  const playTimerSound = useTimerSound();
 
   useEffect(() => {
     if (remainingSeconds === 0) {
@@ -382,6 +406,19 @@ export function DebateTimerScreen({
     );
     return () => window.clearTimeout(timeout);
   }, [remainingSeconds, onTimeUp]);
+
+  useEffect(() => {
+    if (!timerSoundEnabled) return;
+    if (remainingSeconds <= 5 && remainingSeconds > 0) {
+      playTimerSound("warning");
+    }
+  }, [playTimerSound, remainingSeconds, timerSoundEnabled]);
+
+  useEffect(() => {
+    if (timerSoundEnabled && remainingSeconds === 0) {
+      playTimerSound("finish");
+    }
+  }, [playTimerSound, remainingSeconds, timerSoundEnabled]);
 
   const formattedTime = `${Math.floor(remainingSeconds / 60)
     .toString()
@@ -430,6 +467,10 @@ export function DebateTimerScreen({
             mt="md"
           />
         </div>
+        <TimerSoundToggle
+          enabled={timerSoundEnabled}
+          onChange={setTimerSoundEnabled}
+        />
         <Button size="lg" color="red" variant="light" onClick={onTimeUp}>
           Argument Done
         </Button>

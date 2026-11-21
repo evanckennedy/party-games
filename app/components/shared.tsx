@@ -8,7 +8,9 @@ import {
   Group,
   ThemeIcon,
   Text,
+  Switch,
 } from "@mantine/core";
+import { useCallback, useRef } from "react";
 import type { ButtonProps } from "@mantine/core";
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 
@@ -101,5 +103,71 @@ export function GameMenuButton({ onClick }: { onClick: () => void }) {
     >
       Game menu
     </Button>
+  );
+}
+
+export type TimerSoundCue = "start" | "warning" | "finish";
+
+export function useTimerSound() {
+  const audioContextRef = useRef<AudioContext | null>(null);
+
+  const play = useCallback((cue: TimerSoundCue) => {
+    const AudioContextClass =
+      window.AudioContext ??
+      (
+        window as typeof window & {
+          webkitAudioContext?: typeof AudioContext;
+        }
+      ).webkitAudioContext;
+    if (!AudioContextClass) return;
+
+    const context =
+      audioContextRef.current ?? new AudioContextClass();
+    audioContextRef.current = context;
+    if (context.state === "suspended") void context.resume();
+
+    const frequencies =
+      cue === "start"
+        ? [440, 660]
+        : cue === "warning"
+          ? [660]
+          : [523, 392, 262];
+    const duration = cue === "finish" ? 0.12 : 0.08;
+    let startAt = context.currentTime;
+
+    frequencies.forEach((frequency) => {
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      oscillator.type = "sine";
+      oscillator.frequency.value = frequency;
+      gain.gain.setValueAtTime(cue === "warning" ? 0.025 : 0.045, startAt);
+      gain.gain.exponentialRampToValueAtTime(0.001, startAt + duration);
+      oscillator.connect(gain);
+      gain.connect(context.destination);
+      oscillator.start(startAt);
+      oscillator.stop(startAt + duration);
+      startAt += duration + 0.035;
+    });
+  }, []);
+
+  return play;
+}
+
+export function TimerSoundToggle({
+  enabled,
+  onChange,
+}: {
+  enabled: boolean;
+  onChange: (enabled: boolean) => void;
+}) {
+  return (
+    <Switch
+      checked={enabled}
+      onChange={(event) => onChange(event.currentTarget.checked)}
+      label="Timer sound"
+      description={enabled ? "On" : "Off"}
+      color="orange"
+      size="md"
+    />
   );
 }
