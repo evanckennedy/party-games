@@ -616,7 +616,30 @@ export default function Home() {
       : pool;
     const selectionPool =
       differentCategory.length > 0 ? differentCategory : pool;
-    const prompt = selectionPool[secureRandomIndex(selectionPool.length)];
+    const easyCategories: CharadesPrompt["category"][] = [
+      "Actions",
+      "Animals",
+      "Objects",
+      "Sports",
+    ];
+    const mediumCategories: CharadesPrompt["category"][] = [
+      "Jobs",
+      "Movies & TV",
+      "Situations",
+    ];
+    const difficultyRoll = secureRandomIndex(100);
+    const preferredCategories =
+      difficultyRoll < 45
+        ? easyCategories
+        : difficultyRoll < 85
+          ? mediumCategories
+          : (["Funny & Absurd"] as CharadesPrompt["category"][]);
+    const preferredPool = selectionPool.filter((prompt) =>
+      preferredCategories.includes(prompt.category),
+    );
+    const promptPool =
+      preferredPool.length > 0 ? preferredPool : selectionPool;
+    const prompt = promptPool[secureRandomIndex(promptPool.length)];
     setCharadesPrompt(prompt);
     setRemainingCharadesPrompts(
       pool.filter((candidate) => candidate.id !== prompt.id),
