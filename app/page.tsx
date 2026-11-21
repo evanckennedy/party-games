@@ -659,6 +659,18 @@ export default function Home() {
       charadesPrompt?.category ?? null,
     );
   };
+  const swapCharadesPrompt = () => {
+    const availablePrompts =
+      remainingCharadesPrompts.length > 0
+        ? remainingCharadesPrompts
+        : charadesPrompts.filter(
+            (prompt) => prompt.id !== charadesPrompt?.id,
+          );
+    chooseCharadesPrompt(
+      availablePrompts,
+      charadesPrompt?.category ?? null,
+    );
+  };
   const chooseHotTake = (pool: HotTake[]) => {
     const selected = pool[secureRandomIndex(pool.length)];
     setHotTake(selected);
@@ -827,6 +839,19 @@ export default function Home() {
   const chooseDebateWinner = (winner: DebateWinner) => {
     setDebateWinner(winner);
     setScreen("debate-result");
+  };
+  const swapDebateTopic = () => {
+    if (!currentDebate) return;
+    const { claim, remaining } = chooseDebateClaim(
+      debateCategory,
+      remainingDebateClaims,
+      currentDebate.claim.id,
+    );
+    setCurrentDebate({
+      ...currentDebate,
+      claim,
+    });
+    setRemainingDebateClaims(remaining);
   };
 
   if (screen === "home")
@@ -1023,6 +1048,7 @@ export default function Home() {
         prompt={charadesPrompt}
         onHome={resetHome}
         onGameMenu={() => setScreen("charades-intro")}
+        onSwap={swapCharadesPrompt}
         onNext={nextCharade}
       />
     );
@@ -1170,6 +1196,7 @@ export default function Home() {
         setDuration={setDebateDuration}
         onHome={resetHome}
         onGameMenu={() => setScreen("debate-players")}
+        onSwap={swapDebateTopic}
         onStart={() => setScreen("debate-active")}
       />
     );

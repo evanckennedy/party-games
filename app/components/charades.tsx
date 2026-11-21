@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowRight, Clapperboard } from "lucide-react";
+import { ArrowRight, Clapperboard, RotateCcw } from "lucide-react";
 import {
   Badge,
   Button,
@@ -21,11 +21,13 @@ export function CharadesScreen({
   prompt,
   onHome,
   onGameMenu,
+  onSwap,
   onNext,
 }: {
   prompt: CharadesPrompt;
   onHome: () => void;
   onGameMenu: () => void;
+  onSwap: () => void;
   onNext: () => void;
 }) {
   const [phase, setPhase] = useState<CharadesPhase>("handoff");
@@ -101,16 +103,26 @@ export function CharadesScreen({
                   Act it out without speaking.
                 </Text>
               </div>
-              <Button
-                size="md"
-                color="orange"
-                onClick={() => {
-                  setSecondsLeft(60);
-                  setPhase("playing");
-                }}
-              >
-                I&apos;m Ready
-              </Button>
+              <Group justify="center" gap="sm">
+                <Button
+                  variant="light"
+                  color="orange"
+                  leftSection={<RotateCcw size={17} />}
+                  onClick={onSwap}
+                >
+                  Swap prompt
+                </Button>
+                <Button
+                  size="md"
+                  color="orange"
+                  onClick={() => {
+                    setSecondsLeft(60);
+                    setPhase("playing");
+                  }}
+                >
+                  I&apos;m Ready
+                </Button>
+              </Group>
             </Stack>
           ) : visiblePhase === "playing" ? (
             <Stack align="center" gap="lg">

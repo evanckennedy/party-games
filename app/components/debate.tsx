@@ -7,6 +7,7 @@ import {
   Clock3,
   Minus,
   Plus,
+  RotateCcw,
   Shield,
   Swords,
   UsersRound,
@@ -223,6 +224,7 @@ export function DebateReadyScreen({
   setDuration,
   onHome,
   onGameMenu,
+  onSwap,
   onStart,
 }: {
   claim: DebateClaim;
@@ -233,6 +235,7 @@ export function DebateReadyScreen({
   setDuration: (duration: DebateDuration) => void;
   onHome: () => void;
   onGameMenu: () => void;
+  onSwap: () => void;
   onStart: () => void;
 }) {
   return (
@@ -292,14 +295,24 @@ export function DebateReadyScreen({
         </div>
         <Group justify="space-between">
           <GameMenuButton onClick={onGameMenu} />
-          <Button
-            size="md"
-            color="red"
-            leftSection={<Swords size={17} />}
-            onClick={onStart}
-          >
-            Start Debate
-          </Button>
+          <Group gap="sm">
+            <Button
+              variant="light"
+              color="red"
+              leftSection={<RotateCcw size={17} />}
+              onClick={onSwap}
+            >
+              Swap topic
+            </Button>
+            <Button
+              size="md"
+              color="red"
+              leftSection={<Swords size={17} />}
+              onClick={onStart}
+            >
+              Start Debate
+            </Button>
+          </Group>
         </Group>
       </Stack>
     </Shell>
