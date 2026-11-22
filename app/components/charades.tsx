@@ -29,16 +29,19 @@ export function CharadesScreen({
   onGameMenu,
   onSwap,
   onNext,
+  timerSoundEnabled,
+  setTimerSoundEnabled,
 }: {
   prompt: CharadesPrompt;
   onHome: () => void;
   onGameMenu: () => void;
   onSwap: () => void;
   onNext: () => void;
+  timerSoundEnabled: boolean;
+  setTimerSoundEnabled: (enabled: boolean) => void;
 }) {
   const [phase, setPhase] = useState<CharadesPhase>("handoff");
   const [secondsLeft, setSecondsLeft] = useState(60);
-  const [timerSoundEnabled, setTimerSoundEnabled] = useState(false);
   const playTimerSound = useTimerSound();
   const visiblePhase =
     phase === "playing" && secondsLeft === 0 ? "time-up" : phase;

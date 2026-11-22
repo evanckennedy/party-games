@@ -286,6 +286,8 @@ export default function Home() {
   const [remainingCharadesPrompts, setRemainingCharadesPrompts] = useState<
     CharadesPrompt[]
   >([]);
+  const [charadesTimerSoundEnabled, setCharadesTimerSoundEnabled] =
+    useState(false);
   const [hotTake, setHotTake] = useState<HotTake | null>(null);
   const [remainingHotTakes, setRemainingHotTakes] = useState<HotTake[]>([]);
   const [logicDifficulty, setLogicDifficulty] =
@@ -357,6 +359,7 @@ export default function Home() {
     setRemainingWhoAmIIdentities([]);
     setCharadesPrompt(null);
     setRemainingCharadesPrompts([]);
+    setCharadesTimerSoundEnabled(false);
     setHotTake(null);
     setRemainingHotTakes([]);
     setLogicChallenge(null);
@@ -1051,6 +1054,8 @@ export default function Home() {
         onGameMenu={() => setScreen("charades-intro")}
         onSwap={swapCharadesPrompt}
         onNext={nextCharade}
+        timerSoundEnabled={charadesTimerSoundEnabled}
+        setTimerSoundEnabled={setCharadesTimerSoundEnabled}
       />
     );
   if (screen === "hot-take-intro")
