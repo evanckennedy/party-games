@@ -27,6 +27,8 @@ body {
       rgba(43, 138, 62, 0.08),
       transparent 28rem
     );
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 button,
